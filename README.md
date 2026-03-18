@@ -550,3 +550,11 @@ The AGPL license ensures that any deployment of The Actual News must share its s
 **[@4444j99](https://github.com/4444j99)**
 
 Part of the [ORGAN-III: Ergon](https://github.com/organvm-iii-ergon) organization within the eight-organ [organvm](https://github.com/meta-organvm) system.
+
+<!-- SYSTEM-NAV-START -->
+
+---
+
+<sub>[Case Study](https://4444j99.github.io/portfolio/projects/the-actual-news/) · [Portfolio](https://4444j99.github.io/portfolio/) · [System Directory](https://4444j99.github.io/portfolio/directory/) · [ORGAN III · Ergon](https://organvm-iii-ergon.github.io/) · Part of the <a href="https://4444j99.github.io/portfolio/directory/">ORGANVM eight-organ system</a></sub>
+
+<!-- SYSTEM-NAV-END -->
