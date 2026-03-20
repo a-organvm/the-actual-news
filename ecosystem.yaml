@@ -1,11 +1,60 @@
 schema_version: '1.0'
 repo: the-actual-news
 organ: III
-display_name: "Verifiable news ledger platform \u2014 news as a public service"
+display_name: "The Actual News — Verifiable news ledger platform, news as a public service"
+
 delivery:
 - platform: web_app
-  status: not_started
+  status: live
+  priority: critical
+  notes: "Deployed at the-actual-news.pages.dev (Cloudflare Pages)"
+  next_action: "Add analytics tracking and performance monitoring"
+
 revenue:
 - platform: subscription
   status: planned
+  priority: high
+  notes: "Premium tier for advanced source verification and analysis"
+  next_action: "Design subscription tiers and premium feature set"
+
+marketing:
+- platform: seo
+  status: planned
   priority: critical
+  notes: "News verification, media literacy, public accountability keywords"
+  next_action: "Optimize landing page for media literacy keywords"
+- platform: content_marketing
+  status: planned
+  priority: high
+  notes: "Blog on media verification, fact-checking methodology"
+  next_action: "Write foundational article on verifiable news methodology"
+- platform: social_organic
+  status: not_started
+  priority: medium
+  notes: "Twitter/X for media literacy community"
+  next_action: "Activate social presence via kerygma profile"
+
+community:
+- platform: discord
+  status: not_started
+  priority: medium
+  notes: "Media literacy community, source verification discussions"
+  next_action: "Create Discord after initial user traction"
+
+content:
+- platform: blog
+  status: in_progress
+  priority: high
+  notes: "Editorial content on news verification and media literacy"
+  next_action: "Publish first 3 methodology articles"
+- platform: docs_site
+  status: not_started
+  priority: medium
+  next_action: "Document verification methodology for contributors"
+
+listings:
+- platform: product_hunt
+  status: planned
+  priority: high
+  target_date: "2026-Q3"
+  next_action: "Launch on PH with verifiable news angle"

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Actual News — Ergon</title>
 <meta name="description" content="Verifiable news ledger platform — news as a public service">
-<!-- ORGANVM:PITCH:AUTO v1.0 generated 2026-02-24T12:37:04Z -->
+<!-- ORGANVM:PITCH:AUTO v1.0 generated 2026-03-20T01:13:03Z -->
 <style>
 /* ===== RESET & TOKENS ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -213,6 +213,8 @@ section{position:relative;width:100%;min-height:100vh;display:flex;align-items:c
     </div>
     <div class="edge-list">
       <div class="edge-item"><span class="edge-dir">produces</span>{'type': 'product', 'description': 'Software product, API, or service'}</div>
+      <div class="edge-item"><span class="edge-dir">produces</span>{'type': 'community_signal', 'description': 'Product milestones and releases generate community events', 'consumers': ['organvm-vi-koinonia/community-hub']}</div>
+      <div class="edge-item"><span class="edge-dir">produces</span>{'type': 'distribution_signal', 'description': 'Product updates trigger POSSE distribution via kerygma profile', 'consumers': ['organvm-vii-kerygma/social-automation']}</div>
     </div>
     <div class="siblings">
       <span class="sibling-tag">classroom-rpg-aetheria</span>
