@@ -4,9 +4,26 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
     open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+      npm-dev:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+      day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      github-actions-all:
+        patterns:
+          - "*"
