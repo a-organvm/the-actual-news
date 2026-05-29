@@ -29,3 +29,9 @@ This platform handles news verification data. Key security areas:
 - Publication gate enforcement (policy-based access control)
 - Event ledger immutability
 - Actor identity and role separation
+
+## Dependency Management
+
+We do not use Dependabot or similar automated dependency update tools. Our dependency management posture is manual and intentional (see [ADR-003](../docs/adr/003-dependency-management.md)). 
+
+If you discover a security vulnerability in one of our dependencies, please follow the responsible disclosure process outlined above. We will manually review, test, and patch the dependency.
