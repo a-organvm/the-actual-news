@@ -50,3 +50,12 @@ subscriptions:
   - event: distribution.dispatched
     source: ORGAN-VII
     action: Announcement distributed via POSSE pipeline
+
+# Dependency management posture (IRF-SYS-007): Dependabot grouping was deployed
+# (commit bc8bd90) then deliberately removed by the maintainer (commit c30b204).
+# Only GitHub security alerts remain active. Declared explicitly so the opt-out
+# is machine-readable, not implicit.
+dependency_management:
+  strategy: manual
+  dependabot: disabled
+  security_alerts: enabled
