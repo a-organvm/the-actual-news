@@ -1,5 +1,7 @@
 # ADR-003: Dependency Management Posture
 
+Face: internal
+
 ## Status
 
 Accepted

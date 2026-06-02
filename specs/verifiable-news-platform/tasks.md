@@ -1,5 +1,7 @@
 # Verifiable News Platform — Task List
 
+Face: internal
+
 **Status:** Draft
 **Version:** 0.1.0
 

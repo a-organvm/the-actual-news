@@ -1,5 +1,7 @@
 # Local Development Guide
 
+Face: internal
+
 ## Prerequisites
 
 - **Node.js** >= 20

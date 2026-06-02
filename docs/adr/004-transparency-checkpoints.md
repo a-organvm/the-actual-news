@@ -1,5 +1,7 @@
 # ADR-004: Transparency Checkpoints Before Blockchain Anchoring
 
+Face: internal
+
 ## Status
 
 Accepted

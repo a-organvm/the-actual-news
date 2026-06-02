@@ -1,5 +1,7 @@
 # Roadmap
 
+Face: client
+
 ## North Star
 
 **Metric:** Verified-information-throughput — verified claim throughput per unit cost, with corrections as a first-class improvement signal.

@@ -1,5 +1,7 @@
 # Glossary
 
+Face: client
+
 Terms defined in the Core Protocol Spec v1, section 1 (Terminology).
 
 ## Core Identifiers

@@ -1,5 +1,7 @@
 # `$CORE_PROTOCOL_SPEC_V1` — Core Protocol RFC (Draft)
 
+Face: public
+
 `$RFC_ID = core-protocol-spec-v1`
 `$PROTOCOL_FAMILY = news-ledger`
 `$PROTOCOL_VERSION = v1`
