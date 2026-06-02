@@ -110,7 +110,7 @@ outbox AS (
     jsonb_build_object(
       'story_id', $2,
       'story_version_id', $3,
-      'policy_pack_version', $13
+      'policy_pack_version', $13::text
     )
   FROM updated_story
   RETURNING event_id
