@@ -1,7 +1,7 @@
 ---
 title: "Prima Pet Evolutionary Implementation Plan"
 date: "2026-06-02"
-status: "draft"
+status: "in_progress"
 source_inquiry: "../../docs/design/expansive-inquiry-prima-pet-systems/06-synthesis.md"
 source_premortem: "../../docs/design/expansive-inquiry-prima-pet-systems/premortem-20260602-111109/premortem-transcript-20260602-111109.md"
 ---
@@ -445,4 +445,25 @@ Acceptance:
 
 ## Immediate Next Step
 
-Draft the Level 1 `pet.json` schema and validate the current Prima package against it. Do not add new behavior until the package format can describe the current pet precisely.
+Draft the Level 2 runtime state protocol adapter. Do not add behavior hooks, scripts, context reads, memory, network access, or personalization until the passive package and state protocol remain stable across a second non-Prima fixture.
+
+## Implementation Log
+
+### 2026-06-02 - Level 1 Package Discipline
+
+Completed:
+
+- Added `tools/pets/pet-manifest.schema.json`.
+- Added `tools/pets/validate-pet-package.mjs`.
+- Added root `pnpm pet:validate` script.
+- Upgraded the installed Prima package manifest at `/Users/4jp/.codex/pets/prima/pet.json` while preserving legacy loader fields.
+- Added live package artifacts: `preview.png`, `validation.json`, `CHANGELOG.md`, and `checksums.txt`.
+- Rebuilt `/Users/4jp/.codex/pets/prima.zip`.
+- Recorded validation evidence at `docs/design/expansive-inquiry-prima-pet-systems/implementation/level-1-validation-20260602-112355.json`.
+
+Deferred:
+
+- Runtime adapter implementation.
+- Small-scale state recognition testing.
+- Non-Prima fixture validation.
+- Signing, sandboxing, permissions, scripts, hooks, context reads, memory, and network behavior.

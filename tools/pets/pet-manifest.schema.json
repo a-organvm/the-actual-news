@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://organvm.local/schemas/codex-pet-manifest-v1.json",
+  "title": "Codex Pet Manifest",
+  "description": "Level 1 manifest contract for passive Codex pet packages. Capability-bearing pets are explicitly out of scope for this schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x-[a-zA-Z0-9_-]+$": true
+  },
+  "required": [
+    "schema_version",
+    "pet_id",
+    "name",
+    "version",
+    "description",
+    "author",
+    "license",
+    "id",
+    "displayName",
+    "spritesheetPath",
+    "assets",
+    "animations",
+    "supported_states",
+    "state_protocol",
+    "compatibility",
+    "provenance",
+    "checksums",
+    "preview",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "pet_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "id": {
+      "type": "string",
+      "description": "Legacy Codex pet loader field. Must match pet_id."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Legacy Codex pet loader field. Must match name."
+    },
+    "spritesheetPath": {
+      "type": "string",
+      "description": "Legacy Codex pet loader field. Must match assets.spritesheet.path."
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spritesheet", "preview", "validation"],
+      "properties": {
+        "spritesheet": {
+          "$ref": "#/$defs/asset"
+        },
+        "preview": {
+          "$ref": "#/$defs/asset"
+        },
+        "validation": {
+          "$ref": "#/$defs/asset"
+        }
+      }
+    },
+    "animations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "row", "frame_count"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          },
+          "row": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "frame_count": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "supported_states": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "state_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "authoritative_source", "states", "state_to_animation"],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "authoritative_source": {
+          "type": "string"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "state_to_animation": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pet_runtime", "codex_app"],
+      "properties": {
+        "pet_runtime": {
+          "type": "string"
+        },
+        "codex_app": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_at", "source_run", "method"],
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "source_run": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "checksums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256"],
+      "properties": {
+        "sha256": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "description"],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "maxItems": 0,
+      "description": "Must remain empty for Level 1 passive pet packages."
+    }
+  },
+  "$defs": {
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mime_type", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "mime_type": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cell_width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cell_height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

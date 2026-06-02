@@ -8,6 +8,7 @@
     "build": "pnpm -r build",
     "dev": "pnpm -r --parallel dev",
     "lint": "pnpm -r lint",
+    "pet:validate": "node tools/pets/validate-pet-package.mjs",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
   },
