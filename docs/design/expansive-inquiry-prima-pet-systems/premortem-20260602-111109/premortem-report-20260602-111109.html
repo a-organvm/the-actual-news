@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Premortem Report - Prima Pet System Evolution</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a0e1a;
+      --panel: #121827;
+      --panel-2: #172033;
+      --text: #edf2ff;
+      --muted: #aeb9d5;
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #66e3ff;
+      --danger: #ff6b8a;
+      --warn: #ffd166;
+      --ok: #7bd88f;
+      --violet: #b892ff;
+      --green: #6ee7b7;
+      --orange: #f59e0b;
+      --blue: #60a5fa;
+      --pink: #f472b6;
+      --red: #f87171;
+      --cyan: #22d3ee;
+      --lime: #a3e635;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 56px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 64px);
+      margin-top: 10px;
+      max-width: 980px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    ul, ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    code {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #dff7ff;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .summary-card, .section, .failure-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .summary-card p {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .section {
+      margin: 16px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .failure-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .failure-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--card-accent);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .matrix div {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    footer {
+      margin-top: 32px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 850px) {
+      .summary, .grid, .matrix {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        width: min(100% - 22px, 1180px);
+        padding-top: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Premortem Report</div>
+      <h1>Prima Pet System Evolution Failed Six Months From Now</h1>
+      <p style="max-width: 860px; color: var(--muted); margin-top: 16px;">
+        Prospective hindsight on evolving Prima from a visual Codex pet into a trustworthy ambient state familiar.
+      </p>
+    </header>
+
+    <section class="summary">
+      <article class="summary-card">
+        <strong>Most Likely Failure</strong>
+        <p>Role ambiguity: the pet remains decoration, state surface, companion, and possible control layer all at once.</p>
+      </article>
+      <article class="summary-card">
+        <strong>Most Dangerous Failure</strong>
+        <p>Capability creep before governance: pets become executable context surfaces before signing, sandboxing, and permissions exist.</p>
+      </article>
+      <article class="summary-card">
+        <strong>Hidden Assumption</strong>
+        <p>Emotional vividness will naturally mature into system trust. It will not.</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>Revised Plan</h2>
+      <ol>
+        <li>Define the role hierarchy first: visual pet, ambient state surface, user-configured state mapping, and deferred capability-bearing companion.</li>
+        <li>Create a manifest-first package standard with version, compatibility, state inventory, preview assets, checksums, provenance, and license.</li>
+        <li>Bind pet state only to authoritative runtime state, including explicit unknown and stale states.</li>
+        <li>Validate small-scale readability, reduced motion, contrast, theme safety, transparency, and fallback rendering before runtime expansion.</li>
+        <li>Separate the general pet standard from Prima's phasing, density, swarm, and negative-space vocabulary.</li>
+        <li>Freeze scripts, hooks, context reads, network behavior, and memory until a formal security model exists.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>Pre-Launch Checklist</h2>
+      <ul>
+        <li>A reviewer can identify each supported workflow state from Prima at intended UI scale, including reduced-motion mode.</li>
+        <li><code>pet.json</code> declares supported states, assets, version, compatibility, provenance, checksums, license, and no capability fields.</li>
+        <li>Runtime state mapping is driven by one authoritative enum with stale and unknown handling.</li>
+        <li>A second non-Prima pet can express the same workflow states without using Prima-specific vocabulary.</li>
+        <li>Governance review confirms no package field carries private user context, code execution, network behavior, or unapproved hooks.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Round-Robin Investigation</h2>
+      <div class="matrix">
+        <div><strong>8</strong><br>failure modes</div>
+        <div><strong>6</strong><br>parallel agents run</div>
+        <div><strong>2</strong><br>local completions</div>
+        <div><strong>1</strong><br>evolutionary plan</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="failure-card" style="--card-accent: var(--orange);">
+        <h3>1. Product Role Ambiguity</h3>
+        <div class="meta-row"><span class="pill">Likelihood: High</span><span class="pill">Severity: High</span></div>
+        <p>The pet is treated as decoration, ambient state, workflow control, and companion. Users cannot tell whether density shifts mean breathing, working, or needing attention.</p>
+        <div class="label">Assumption</div>
+        <p>Prima's role can stay fluid while implementation naturally converges.</p>
+        <div class="label">Watch For</div>
+        <p>Specs use mood, workflow status, and assistant reaction for the same behavior.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--pink);">
+        <h3>2. UI-Scale Visual Failure</h3>
+        <div class="meta-row"><span class="pill">Likelihood: High</span><span class="pill">Severity: Medium</span></div>
+        <p>The beautiful phasing body becomes vibrating noise at real UI scale. Multiple workflow states collapse into busy shimmer.</p>
+        <div class="label">Assumption</div>
+        <p>Concept-art legibility survives real Codex sizes and accessibility constraints.</p>
+        <div class="label">Watch For</div>
+        <p>Users misidentify more than one state or describe several as glitching, busy, or broken.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--red);">
+        <h3>3. Runtime Truth Failure</h3>
+        <div class="meta-row"><span class="pill">Likelihood: High</span><span class="pill">Severity: High</span></div>
+        <p>Prima appears complete, calm, or active while Codex is blocked, failing, cancelled, or waiting. Users learn to ignore the pet.</p>
+        <div class="label">Assumption</div>
+        <p>Expressive approximation is acceptable because the pet is ambient and nonverbal.</p>
+        <div class="label">Watch For</div>
+        <p>Visual state lags authoritative state by more than one transition.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--blue);">
+        <h3>4. Ad Hoc Packaging</h3>
+        <div class="meta-row"><span class="pill">Likelihood: Medium</span><span class="pill">Severity: High</span></div>
+        <p>Zip files keep shipping with loose assets and undocumented runtime expectations. Installs and upgrades become brittle.</p>
+        <div class="label">Assumption</div>
+        <p>A compelling visual pet can graduate into infrastructure without a disciplined package format.</p>
+        <div class="label">Watch For</div>
+        <p>Two releases require manual install notes, renamed files, or replacement zips.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--violet);">
+        <h3>5. Personalization Overreach</h3>
+        <div class="meta-row"><span class="pill">Likelihood: Medium</span><span class="pill">Severity: High</span></div>
+        <p>Private user rhythms, style, or memory-adjacent signals leak into package data or unreproducible behavior.</p>
+        <div class="label">Assumption</div>
+        <p>Personalization can create familiarity without becoming exportable identity data.</p>
+        <div class="label">Watch For</div>
+        <p>Manifest fields like <code>mood_profile</code>, <code>user_style</code>, or calibration blobs appear.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--danger);">
+        <h3>6. Capability Creep</h3>
+        <div class="meta-row"><span class="pill">Likelihood: Medium</span><span class="pill">Severity: Critical</span></div>
+        <p>Pets gain scripts, hooks, context reads, event subscriptions, or network-like callbacks before a security model exists.</p>
+        <div class="label">Assumption</div>
+        <p>Ambient visual features can gain runtime capabilities incrementally without formal permissions.</p>
+        <div class="label">Watch For</div>
+        <p>Fields such as <code>script</code>, <code>hook</code>, <code>context</code>, <code>fetch</code>, or <code>eventBus</code> appear.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--cyan);">
+        <h3>7. No Validation Loop</h3>
+        <div class="meta-row"><span class="pill">Likelihood: High</span><span class="pill">Severity: Medium</span></div>
+        <p>Asset QA, readability, reduced motion, package validation, and regressions remain subjective. Quality decays across iterations.</p>
+        <div class="label">Assumption</div>
+        <p>Expert visual review can substitute for repeatable validation.</p>
+        <div class="label">Watch For</div>
+        <p>Release notes say only "looks good" or "visually checked" without attached validation results.</p>
+      </article>
+
+      <article class="failure-card" style="--card-accent: var(--lime);">
+        <h3>8. Overfit to Prima</h3>
+        <div class="meta-row"><span class="pill">Likelihood: Medium</span><span class="pill">Severity: Medium</span></div>
+        <p>The standard copies Prima's metaphysics: phasing, density, shimmer, and voids become required concepts for every pet.</p>
+        <div class="label">Assumption</div>
+        <p>The first pet's expressive vocabulary can define the general standard.</p>
+        <div class="label">Watch For</div>
+        <p>Non-Prima pets need exceptions to represent the same six workflow states.</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>Expansive Inquiry Overlay</h2>
+      <p>The expansive inquiry named three layers: surface, behavior, and governance. The premortem shows how each fails when isolated: surface without validation becomes noise; behavior without authoritative state becomes false status; governance without early enforcement becomes a late freeze on a beloved feature.</p>
+      <p>The evolutionary path is not to make Prima more alive. It is to make Prima more legible, truthful, portable, and bounded before granting any richer capability.</p>
+    </section>
+
+    <footer>
+      Generated 2026-06-02T15:11:09Z. Topic: Prima pet design and pet systems. Method: premortem plus expansive-inquiry synthesis.
+    </footer>
+  </main>
+</body>
+</html>
