@@ -130,7 +130,3 @@ BEGIN
   );
 
 END $$;
-
-SELECT
-  (SELECT state FROM stories WHERE platform_id = $1 AND story_id = $2) AS story_state,
-  (SELECT COUNT(*)::int FROM event_outbox WHERE platform_id = $1 AND event_type = 'story.published.v1') AS outbox_count;

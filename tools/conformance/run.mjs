@@ -149,7 +149,19 @@ async function runFixture(pool, fixturePath) {
 
     if (exp.publish_gate_pass === true) {
       await client.query("BEGIN");
-      const pubRes = await execInSchema(client, schema, { text: PUBLISH_TXN_SQL, values: publishArgs });
+      await execInSchema(client, schema, { text: PUBLISH_TXN_SQL, values: publishArgs });
+      const pubRes = await execInSchema(
+        client,
+        schema,
+        {
+          text: `
+            SELECT
+              (SELECT state FROM stories WHERE platform_id=$1 AND story_id=$2) AS story_state,
+              (SELECT COUNT(*)::int FROM event_outbox WHERE platform_id=$1 AND event_type='story.published.v1') AS outbox_count
+          `,
+          values: [req.platform_id, req.story_id]
+        }
+      );
       await client.query("COMMIT");
 
       const st = String(pubRes.rows?.[0]?.story_state ?? "");
@@ -192,6 +204,7 @@ async function runFixture(pool, fixturePath) {
     await client.query(`DROP SCHEMA ${schema} CASCADE;`);
     return { fixture_id: fixture.fixture_id, ok: true };
   } catch (err) {
+    try { await client.query("ROLLBACK"); } catch {}
     try { await client.query(`DROP SCHEMA ${schema} CASCADE;`); } catch {}
     return { fixture_id: fixture.fixture_id, ok: false, error: String(err?.message ?? err) };
   } finally {
