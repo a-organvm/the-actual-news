@@ -52,7 +52,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [story, claims, evidence_edges, corrections]
+                required: [story, claims, evidence_edges, corrections, bundle_hash]
                 properties:
                   story: { $ref: "story.openapi.yaml#/components/schemas/StoryWithVersions" }
                   claims:
@@ -78,3 +78,79 @@ paths:
                         claim_id: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
                         reason: { type: string }
                         created_at: { $ref: "common.openapi.yaml#/components/schemas/IsoTime" }
+                  bundle_hash:
+                    type: string
+                    description: Canonical SHA-256 hash of the public story bundle.
+
+  /v1/story/{story_id}/transparency:
+    get:
+      operationId: getStoryTransparency
+      parameters:
+        - in: path
+          name: story_id
+          required: true
+          schema: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
+      responses:
+        "200":
+          description: story transparency checkpoints and inclusion proofs
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [story_id, bundle_hash, checkpoints]
+                properties:
+                  story_id: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
+                  bundle_hash: { type: string }
+                  checkpoints:
+                    type: array
+                    items:
+                      type: object
+                      required: [checkpoint_id, merkle_root, created_at, event_id, inclusion_proof]
+                      properties:
+                        checkpoint_id: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
+                        merkle_root: { type: string }
+                        created_at: { $ref: "common.openapi.yaml#/components/schemas/IsoTime" }
+                        event_id: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
+                        inclusion_proof:
+                          type: object
+                          required: [leaf_hash, leaf_index, proof]
+                          properties:
+                            leaf_hash: { type: string }
+                            leaf_index: { type: integer, minimum: 0 }
+                            proof:
+                              type: array
+                              items:
+                                type: object
+                                required: [side, hash]
+                                properties:
+                                  side: { type: string, enum: [left, right] }
+                                  hash: { type: string }
+
+  /v1/transparency/checkpoints:
+    post:
+      operationId: createTransparencyCheckpoint
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit: { type: integer, minimum: 1, maximum: 1000, default: 100 }
+      responses:
+        "201":
+          description: checkpoint created
+        "200":
+          description: no eligible events
+
+  /v1/transparency/checkpoints/{checkpoint_id}:
+    get:
+      operationId: getTransparencyCheckpoint
+      parameters:
+        - in: path
+          name: checkpoint_id
+          required: true
+          schema: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
+      responses:
+        "200":
+          description: transparency checkpoint

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import crypto from "node:crypto";
 import pg from "pg";
 
 const { Pool } = pg;
@@ -26,8 +27,70 @@ const FIXTURE_FILES = [
   "CT-04.json",
   "CT-05.json",
   "CT-06.json",
-  "CT-07.json"
+  "CT-07.json",
+  "CT-08.json"
 ];
+
+function normalizeJson(value) {
+  if (value === null || value === undefined) return null;
+  if (value instanceof Date) return value.toISOString();
+  if (Array.isArray(value)) return value.map((item) => normalizeJson(item));
+  if (typeof value === "object") {
+    const out = {};
+    for (const [key, child] of Object.entries(value)) out[key] = normalizeJson(child);
+    return out;
+  }
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value === "boolean" || typeof value === "string") return value;
+  return String(value);
+}
+
+function stringifyCanonical(value) {
+  const normalized = normalizeJson(value);
+  if (normalized === null) return "null";
+  if (typeof normalized === "boolean") return normalized ? "true" : "false";
+  if (typeof normalized === "number") return JSON.stringify(normalized);
+  if (typeof normalized === "string") return JSON.stringify(normalized);
+  if (Array.isArray(normalized)) {
+    return `[${normalized.map((item) => stringifyCanonical(item)).join(",")}]`;
+  }
+
+  return `{${Object.entries(normalized)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, child]) => `${JSON.stringify(key)}:${stringifyCanonical(child)}`)
+    .join(",")}}`;
+}
+
+function sha256Hex(value) {
+  return `sha256:${crypto.createHash("sha256").update(value, "utf8").digest("hex")}`;
+}
+
+function hashCanonical(value) {
+  return sha256Hex(stringifyCanonical(value));
+}
+
+function merkleLeafHash(value) {
+  return sha256Hex(`leaf:${stringifyCanonical(value)}`);
+}
+
+function merkleParentHash(left, right) {
+  return sha256Hex(`node:${left}:${right}`);
+}
+
+function merkleRoot(leafHashes) {
+  if (leafHashes.length === 0) return sha256Hex("empty:");
+  let level = [...leafHashes];
+  while (level.length > 1) {
+    const next = [];
+    for (let i = 0; i < level.length; i += 2) {
+      const left = level[i];
+      const right = level[i + 1] ?? left;
+      next.push(merkleParentHash(left, right));
+    }
+    level = next;
+  }
+  return level[0] ?? sha256Hex("empty:");
+}
 
 function schemaName() {
   const t = Date.now().toString(36);
@@ -48,6 +111,52 @@ function assertEq(label, got, exp) {
     return;
   }
   if (got !== exp) throw new Error(`${label}: expected ${exp} got ${got}`);
+}
+
+function byCreatedAsc(a, b) {
+  return String(a.created_at ?? "").localeCompare(String(b.created_at ?? ""));
+}
+
+function byCreatedDesc(a, b) {
+  return String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""));
+}
+
+function buildStoryBundle(ledger, storyId) {
+  const story = (ledger.stories ?? []).find((s) => s.story_id === storyId);
+  if (!story) throw new Error(`bundle_hash: story not found ${storyId}`);
+
+  const versions = (ledger.story_versions ?? [])
+    .filter((v) => v.story_id === storyId)
+    .sort(byCreatedDesc);
+  const claims = (ledger.claims ?? [])
+    .filter((c) => c.story_id === storyId)
+    .sort(byCreatedAsc);
+  const claimIds = new Set(claims.map((c) => c.claim_id));
+  const evidence_edges = (ledger.claim_evidence_edges ?? [])
+    .filter((edge) => claimIds.has(edge.claim_id))
+    .sort(byCreatedAsc)
+    .map((edge) => ({
+      claim_id: edge.claim_id,
+      evidence_id_hash: edge.evidence_id_hash,
+      relation: edge.relation === "context_only" ? "context" : edge.relation,
+      strength: Number(edge.strength ?? 0.5)
+    }));
+  const corrections = (ledger.corrections ?? [])
+    .filter((correction) => claimIds.has(correction.claim_id))
+    .sort(byCreatedAsc)
+    .map((correction) => ({
+      correction_id: correction.correction_id,
+      claim_id: correction.claim_id,
+      reason: correction.reason,
+      created_at: correction.created_at
+    }));
+
+  return {
+    story: { ...story, versions },
+    claims,
+    evidence_edges,
+    corrections
+  };
 }
 
 async function execInSchema(client, schema, sql) {
@@ -142,6 +251,16 @@ async function runFixture(pool, fixturePath) {
 
     assertEq("corroboration_ok", Boolean(row.corroboration_ok), exp.corroboration_ok);
     assertEq("publish_gate_pass", Boolean(row.publish_gate_pass), exp.publish_gate_pass);
+
+    if (exp.bundle_hash) {
+      const bundleHash = hashCanonical(buildStoryBundle(ledger, req.story_id));
+      assertEq("bundle_hash", bundleHash, exp.bundle_hash);
+    }
+
+    if (exp.checkpoint_merkle_root) {
+      const leafHashes = (fixture.checkpoint_events ?? []).map((event) => merkleLeafHash(event));
+      assertEq("checkpoint_merkle_root", merkleRoot(leafHashes), exp.checkpoint_merkle_root);
+    }
 
     // transactional publish assertions
     const publishArgs = [...gateArgs, P.policy_pack_version];

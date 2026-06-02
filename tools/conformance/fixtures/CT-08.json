@@ -1,0 +1,136 @@
+{
+  "fixture_id": "CT-08",
+  "policy_pack": {
+    "policy_pack_version": "v1.0.0",
+    "publish_gates": {
+      "min_primary_evidence_ratio": 0.5,
+      "max_unsupported_claim_share": 0.1,
+      "max_contradicted_claims": 0,
+      "require_high_impact_corroboration": true,
+      "high_impact_min_independent_sources": 2
+    },
+    "evidence": {
+      "primary_source_classes": ["primary_record", "primary_media", "primary_dataset"],
+      "independence_key_fields": ["source", "publisher", "url", "blob_uri"]
+    },
+    "claim": {
+      "high_impact_claim_types": ["statistical"],
+      "high_impact_regexes": [
+        "(accus|illegal|fraud|crime|charged|indict|lawsuit|killed|injur|shoot|arrest|explos|terror|abuse)",
+        "(\\$|usd|million|billion|percent|%)"
+      ]
+    }
+  },
+  "request": {
+    "platform_id": "plf_local_01",
+    "story_id": "01JCT08000000000000000001",
+    "story_version_id": "01JCT08V00000000000000001"
+  },
+  "ledger": {
+    "stories": [
+      {
+        "story_id": "01JCT08000000000000000001",
+        "platform_id": "plf_local_01",
+        "title": "CT-08 transparency story",
+        "state": "review",
+        "created_at": "2026-01-08T00:00:00Z",
+        "updated_at": "2026-01-08T00:00:00Z"
+      }
+    ],
+    "story_versions": [
+      {
+        "story_version_id": "01JCT08V00000000000000001",
+        "story_id": "01JCT08000000000000000001",
+        "body_markdown": "The county published the meeting packet.",
+        "disclosure_markdown": null,
+        "created_at": "2026-01-08T00:00:00Z"
+      }
+    ],
+    "claims": [
+      {
+        "claim_id": "01JCT08C00000000000000001",
+        "story_id": "01JCT08000000000000000001",
+        "story_version_id": "01JCT08V00000000000000001",
+        "claim_type": "factual",
+        "text": "The county published the meeting packet.",
+        "entities": ["county"],
+        "time_window": {},
+        "jurisdiction": "local",
+        "support_status": "supported",
+        "confidence_model": 0.91,
+        "confidence_review": 0.95,
+        "created_at": "2026-01-08T00:00:00Z"
+      }
+    ],
+    "evidence_objects": [
+      {
+        "evidence_id_hash": "sha256:ct08e1",
+        "platform_id": "plf_local_01",
+        "blob_uri": "s3://evidence/ct08/packet.pdf",
+        "media_type": "application/pdf",
+        "extracted_text": null,
+        "provenance": {
+          "source_class": "primary_record",
+          "source": "county_clerk",
+          "publisher": "county",
+          "url": "https://example.local/packet",
+          "collected_at": "2026-01-08T00:00:00Z",
+          "license": "public_record",
+          "chain": []
+        },
+        "created_at": "2026-01-08T00:00:00Z"
+      }
+    ],
+    "claim_evidence_edges": [
+      {
+        "edge_id": "01JCT08E00000000000000001",
+        "claim_id": "01JCT08C00000000000000001",
+        "evidence_id_hash": "sha256:ct08e1",
+        "relation": "supports",
+        "strength": 0.95,
+        "reviewer_actor_id": null,
+        "notes": null,
+        "created_at": "2026-01-08T00:00:00Z"
+      }
+    ],
+    "corrections": []
+  },
+  "checkpoint_events": [
+    {
+      "event_id": "01JCT08P00000000000000001",
+      "event_type": "story.published.v1",
+      "event_version": "v1",
+      "payload": {
+        "story_id": "01JCT08000000000000000001",
+        "story_version_id": "01JCT08V00000000000000001",
+        "publication_scope": "local"
+      },
+      "created_at": "2026-01-08T00:00:01Z"
+    },
+    {
+      "event_id": "01JCT08P00000000000000002",
+      "event_type": "correction.created.v1",
+      "event_version": "v1",
+      "payload": {
+        "story_id": "01JCT08000000000000000001",
+        "claim_id": "01JCT08C00000000000000001",
+        "correction_id": "01JCT08R00000000000000001"
+      },
+      "created_at": "2026-01-08T00:00:02Z"
+    }
+  ],
+  "expected": {
+    "total_claims": 1,
+    "unsupported_claims": 0,
+    "contradicted_claims": 0,
+    "primary_supported_claims": 1,
+    "primary_evidence_ratio": 1.0,
+    "unsupported_claim_share": 0.0,
+    "high_impact_claims": 0,
+    "high_impact_corroborated": 0,
+    "corroboration_ok": true,
+    "publish_gate_pass": true,
+    "bundle_hash": "sha256:0416afea2bc30ac98a7dfb36bf425e4f8d82e4d5523a0b38b2d818b6fc674f5a",
+    "checkpoint_merkle_root": "sha256:c9011ed9099948b49ad1b7436a4232fb15a92c817c3ef7f7ec9e3b505868cc90"
+  }
+}
