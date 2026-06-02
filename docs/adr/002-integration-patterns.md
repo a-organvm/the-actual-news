@@ -1,5 +1,7 @@
 # ADR-002: Cross-Organ Integration and Dependency Patterns
 
+Face: internal
+
 ## Status
 
 Accepted

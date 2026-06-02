@@ -1,3 +1,5 @@
+Face: public
+
 ## Q: 
 There was a time when, before privatization, news was the news. It didn't try and make money. It was a public service without intentional bias, let's say. Design a platform and business model and the software to automate and fix this, essentially.
 

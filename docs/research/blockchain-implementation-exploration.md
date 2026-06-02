@@ -1,5 +1,7 @@
 # Blockchain Technology Implementation Exploration
 
+Face: internal
+
 ## Status
 
 Exploratory research note, 2026-06-02.

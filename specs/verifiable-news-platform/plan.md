@@ -1,5 +1,7 @@
 # Verifiable News Platform — Technical Plan
 
+Face: internal
+
 **Status:** Draft
 **Version:** 0.1.0
 

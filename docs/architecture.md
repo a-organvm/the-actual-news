@@ -1,5 +1,7 @@
 # Architecture
 
+Face: client
+
 ## Platform Design
 
 The Actual News platform rebuilds news as a public service by making truthfulness and accountability the product, and making attention economically irrelevant.

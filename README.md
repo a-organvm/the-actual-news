@@ -1,5 +1,7 @@
 # The Actual News
 
+Face: public
+
 [![CI](https://github.com/organvm-iii-ergon/the-actual-news/actions/workflows/ci.yml/badge.svg)](https://github.com/organvm-iii-ergon/the-actual-news/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-pending-lightgrey)](https://github.com/organvm-iii-ergon/the-actual-news)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/organvm-iii-ergon/the-actual-news/blob/main/LICENSE)
