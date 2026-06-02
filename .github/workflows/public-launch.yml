@@ -107,9 +107,8 @@ jobs:
         run: pnpm -r test
 
   containers:
-    name: Optional container build boundary
+    name: Optional container boundary
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -146,13 +145,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Check optional container boundary files
         run: node tools/containers/validate-boundaries.mjs
 
+      - name: Set up Docker Buildx
+        if: github.event_name == 'workflow_dispatch'
+        uses: docker/setup-buildx-action@v3
+
       - name: Build optional ${{ matrix.image }} artifact
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v6
         with:
           context: .

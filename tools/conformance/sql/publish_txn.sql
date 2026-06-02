@@ -60,7 +60,7 @@ BEGIN
     FROM claim_base cb
     WHERE
       cb.claim_type = ANY($6)
-      OR EXISTS (SELECT 1 FROM unnest($7) r WHERE cb.text ~* r)
+      OR EXISTS (SELECT 1 FROM unnest($7::text[]) r WHERE cb.text ~* r)
   ),
   high_impact_support_counts AS (
     SELECT
