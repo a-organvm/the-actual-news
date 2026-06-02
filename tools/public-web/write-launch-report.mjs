@@ -115,6 +115,10 @@ function statusIcon(ok) {
   return ok ? "PASS" : "BLOCKED";
 }
 
+function normalizeGeneratedAt(text) {
+  return text.replace(/^Generated: .+$/m, "Generated: <timestamp>");
+}
+
 const values = parseEnv(envFile);
 const siteUrl = valueFor(values, "NEXT_PUBLIC_SITE_URL");
 const publicApiUrl = valueFor(values, "NEXT_PUBLIC_PUBLIC_API_URI");
@@ -299,7 +303,17 @@ pnpm conformance:test
 `;
 
 fs.mkdirSync(path.dirname(outputFile), { recursive: true });
-fs.writeFileSync(outputFile, report);
+if (fs.existsSync(outputFile)) {
+  const existingReport = fs.readFileSync(outputFile, "utf8");
+  const existingGeneratedAt = existingReport.match(/^Generated: (.+)$/m)?.[1];
+  if (existingGeneratedAt && normalizeGeneratedAt(existingReport) === normalizeGeneratedAt(report)) {
+    fs.writeFileSync(outputFile, report.replace(/^Generated: .+$/m, `Generated: ${existingGeneratedAt}`));
+  } else {
+    fs.writeFileSync(outputFile, report);
+  }
+} else {
+  fs.writeFileSync(outputFile, report);
+}
 console.log(`Wrote ${path.relative(root, outputFile)}`);
 if (blocked.length > 0) {
   console.log(`Launch report contains ${blocked.length} blocker(s).`);
