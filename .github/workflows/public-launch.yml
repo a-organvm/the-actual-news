@@ -1,0 +1,164 @@
+name: Public Launch Gates
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+
+jobs:
+  public-web:
+    name: Public web artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run required no-Docker launch gates
+        run: pnpm launch:local
+
+      - name: Upload default public launch report
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-launch-report-default
+          path: docs/public-launch-report.md
+          if-no-files-found: error
+
+      - name: Check strict public launch template
+        env:
+          PUBLIC_SITE_URL: https://theactual.news
+          PUBLIC_API_URL: https://api.theactual.news
+          NEWSLETTER_URL: https://briefing.theactual.news/join
+          MEMBERSHIP_URL: https://members.theactual.news/start
+          SPONSOR_URL: https://sponsor.theactual.news/intake
+          ANALYTICS_DOMAIN: theactual.news
+        run: |
+          pnpm public-env:template > .env.public
+          PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
+          mkdir -p artifacts
+          PUBLIC_ENV_FILE=.env.public LAUNCH_REPORT_FILE=artifacts/public-launch-report.strict.md pnpm launch:report
+
+      - name: Upload strict public launch report
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-launch-report-strict-template
+          path: artifacts/public-launch-report.strict.md
+          if-no-files-found: error
+
+  conformance:
+    name: Service and ledger conformance
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: news
+          POSTGRES_PASSWORD: news
+          POSTGRES_DB: news_ledger
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U news -d news_ledger"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      POSTGRES_URI: postgres://news:news@localhost:5432/news_ledger?sslmode=disable
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Check database conformance connection
+        run: pnpm conformance:doctor
+
+      - name: Run service tests and conformance harness
+        run: pnpm -r test
+
+  containers:
+    name: Optional container boundary
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: public-web
+            dockerfile: apps/public-web/Dockerfile
+            build-args: ""
+          - image: gateway-service
+            dockerfile: services/Dockerfile
+            build-args: |
+              SERVICE_DIR=gateway
+              SERVICE_NAME=gateway-service
+          - image: story-service
+            dockerfile: services/Dockerfile
+            build-args: |
+              SERVICE_DIR=story
+              SERVICE_NAME=story-service
+          - image: claim-service
+            dockerfile: services/Dockerfile
+            build-args: |
+              SERVICE_DIR=claim
+              SERVICE_NAME=claim-service
+          - image: evidence-service
+            dockerfile: services/Dockerfile
+            build-args: |
+              SERVICE_DIR=evidence
+              SERVICE_NAME=evidence-service
+          - image: verify-service
+            dockerfile: services/Dockerfile
+            build-args: |
+              SERVICE_DIR=verify
+              SERVICE_NAME=verify-service
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check optional container boundary files
+        run: node tools/containers/validate-boundaries.mjs
+
+      - name: Set up Docker Buildx
+        if: github.event_name == 'workflow_dispatch'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build optional ${{ matrix.image }} artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: false
+          load: false
+          tags: the-actual-news/${{ matrix.image }}:ci
+          build-args: ${{ matrix.build-args }}

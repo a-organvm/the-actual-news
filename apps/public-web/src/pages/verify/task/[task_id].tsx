@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-
-const VERIFY_URI = process.env.NEXT_PUBLIC_VERIFY_URI ?? "http://localhost:8084";
+import { SiteShell } from "../../../components/SiteShell";
+import { ENABLE_VERIFIER_WORKSPACE } from "../../../lib/env";
 
 export default function TaskReviewPage() {
   const router = useRouter();
@@ -13,13 +13,27 @@ export default function TaskReviewPage() {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  if (!ENABLE_VERIFIER_WORKSPACE) {
+    return (
+      <SiteShell title="Internal Reviewer Workspace | The Actual News" path={task_id ? `/verify/task/${task_id}` : "/verify"}>
+        <main className="content-page">
+          <a className="back-link" href="/verify">Back to verification desk</a>
+          <h1>Internal reviewer workspace</h1>
+          <p className="lede">
+            Review submission is disabled in public builds. Enable it only in an authenticated internal deployment.
+          </p>
+        </main>
+      </SiteShell>
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setResult(null);
 
     try {
-      const r = await fetch(`${VERIFY_URI}/v1/tasks/${task_id}/review`, {
+      const r = await fetch(`/v1/tasks/${task_id}/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,55 +56,39 @@ export default function TaskReviewPage() {
   }
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "2rem", fontFamily: "system-ui" }}>
-      <a href="/verify" style={{ color: "#666", textDecoration: "none" }}>&larr; Queue</a>
-      <h1>Review Task</h1>
-      <p>Task ID: <code>{task_id}</code></p>
+    <SiteShell title="Review Task | The Actual News" path={task_id ? `/verify/task/${task_id}` : "/verify"}>
+      <main className="content-page">
+        <a className="back-link" href="/verify">Back to queue</a>
+        <h1>Review task</h1>
+        <p>Task ID: <code>{task_id}</code></p>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        <label>
-          Actor ID
-          <input
-            type="text"
-            value={actorId}
-            onChange={(e) => setActorId(e.target.value)}
-            required
-            style={{ display: "block", width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
-          />
-        </label>
+        <form className="form-grid" onSubmit={handleSubmit}>
+          <label className="field">
+            <span>Actor ID</span>
+            <input className="input" type="text" value={actorId} onChange={(e) => setActorId(e.target.value)} required />
+          </label>
 
-        <label>
-          Verdict
-          <select
-            value={verdict}
-            onChange={(e) => setVerdict(e.target.value)}
-            style={{ display: "block", width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
-          >
-            <option value="supports">Supports</option>
-            <option value="contradicts">Contradicts</option>
-            <option value="context_only">Context Only</option>
-            <option value="cannot_determine">Cannot Determine</option>
-          </select>
-        </label>
+          <label className="field">
+            <span>Verdict</span>
+            <select className="input" value={verdict} onChange={(e) => setVerdict(e.target.value)}>
+              <option value="supports">Supports</option>
+              <option value="contradicts">Contradicts</option>
+              <option value="context_only">Context Only</option>
+              <option value="cannot_determine">Cannot Determine</option>
+            </select>
+          </label>
 
-        <label>
-          Notes
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            required
-            rows={4}
-            style={{ display: "block", width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
-          />
-        </label>
+          <label className="field">
+            <span>Notes</span>
+            <textarea className="input" value={notes} onChange={(e) => setNotes(e.target.value)} required rows={4} />
+          </label>
 
-        <button type="submit" style={{ padding: "0.75rem", background: "#1a1a1a", color: "#fff", border: "none", cursor: "pointer" }}>
-          Submit Review
-        </button>
-      </form>
+          <button className="button button--solid" type="submit">Submit review</button>
+        </form>
 
-      {result && <p style={{ color: "green", marginTop: "1rem" }}>{result}</p>}
-      {error && <p style={{ color: "red", marginTop: "1rem" }}>Error: {error}</p>}
-    </main>
+        {result && <p className="status-pill">{result}</p>}
+        {error && <p className="error-state">Error: {error}</p>}
+      </main>
+    </SiteShell>
   );
 }

@@ -5,6 +5,8 @@ node_modules/
 # Build
 dist/
 .next/
+apps/public-web/.open-next/
+apps/public-web/.wrangler/
 out/
 
 # Environment
@@ -30,6 +32,7 @@ pnpm-debug.log*
 
 # Test
 coverage/
+data/
 
 # Docker
 postgres-data/

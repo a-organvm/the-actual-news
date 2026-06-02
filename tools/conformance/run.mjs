@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import pg from "pg";
 
 const { Pool } = pg;
@@ -11,9 +12,9 @@ if (!POSTGRES_URI) {
   process.exit(2);
 }
 
-const ROOT = process.cwd();
-const FIXTURES_DIR = path.join(ROOT, "tools", "conformance", "fixtures");
-const SQL_DIR = path.join(ROOT, "tools", "conformance", "sql");
+const HARNESS_DIR = path.dirname(fileURLToPath(import.meta.url));
+const FIXTURES_DIR = path.join(HARNESS_DIR, "fixtures");
+const SQL_DIR = path.join(HARNESS_DIR, "sql");
 const SCHEMA_SQL = fs.readFileSync(path.join(SQL_DIR, "schema.sql"), "utf8");
 const GATE_SQL = fs.readFileSync(path.join(SQL_DIR, "publish_gate.sql"), "utf8");
 const PUBLISH_TXN_SQL = fs.readFileSync(path.join(SQL_DIR, "publish_txn.sql"), "utf8");
@@ -153,37 +154,19 @@ async function runFixture(pool, fixturePath) {
 
       const st = String(pubRes.rows?.[0]?.story_state ?? "");
       const oc = Number(pubRes.rows?.[0]?.outbox_count ?? -1);
+      assertEq("publish_txn.publish_gate_pass", Boolean(pubRes.rows?.[0]?.publish_gate_pass), true);
       assertEq("publish_txn.story_state", st, "published");
       assertEq("publish_txn.outbox_count", oc, 1);
     } else {
-      let failedAsExpected = false;
       await client.query("BEGIN");
-      try {
-        await execInSchema(client, schema, { text: PUBLISH_TXN_SQL, values: publishArgs });
-      } catch (e) {
-        failedAsExpected = true;
-      } finally {
-        await client.query("ROLLBACK");
-      }
-      if (!failedAsExpected) throw new Error("publish_txn: expected failure but succeeded");
-
-      const check = await execInSchema(
-        client,
-        schema,
-        {
-          text: `
-            SELECT
-              (SELECT state FROM stories WHERE platform_id=$1 AND story_id=$2) AS story_state,
-              (SELECT COUNT(*)::int FROM event_outbox WHERE platform_id=$1 AND event_type='story.published.v1') AS outbox_count
-          `,
-          values: [req.platform_id, req.story_id]
-        }
-      );
+      const check = await execInSchema(client, schema, { text: PUBLISH_TXN_SQL, values: publishArgs });
+      await client.query("COMMIT");
 
       const st = String(check.rows?.[0]?.story_state ?? "");
       const oc = Number(check.rows?.[0]?.outbox_count ?? -1);
 
       const expectedInitialState = String((ledger.stories?.[0]?.state ?? "review"));
+      assertEq("publish_txn.publish_gate_pass", Boolean(check.rows?.[0]?.publish_gate_pass), false);
       assertEq("publish_txn.story_state", st, expectedInitialState);
       assertEq("publish_txn.outbox_count", oc, 0);
     }
@@ -191,6 +174,7 @@ async function runFixture(pool, fixturePath) {
     await client.query(`DROP SCHEMA ${schema} CASCADE;`);
     return { fixture_id: fixture.fixture_id, ok: true };
   } catch (err) {
+    try { await client.query("ROLLBACK"); } catch {}
     try { await client.query(`DROP SCHEMA ${schema} CASCADE;`); } catch {}
     return { fixture_id: fixture.fixture_id, ok: false, error: String(err?.message ?? err) };
   } finally {
