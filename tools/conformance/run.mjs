@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import pg from "pg";
 
 const { Pool } = pg;
@@ -11,9 +12,9 @@ if (!POSTGRES_URI) {
   process.exit(2);
 }
 
-const ROOT = process.cwd();
-const FIXTURES_DIR = path.join(ROOT, "tools", "conformance", "fixtures");
-const SQL_DIR = path.join(ROOT, "tools", "conformance", "sql");
+const HARNESS_DIR = path.dirname(fileURLToPath(import.meta.url));
+const FIXTURES_DIR = path.join(HARNESS_DIR, "fixtures");
+const SQL_DIR = path.join(HARNESS_DIR, "sql");
 const SCHEMA_SQL = fs.readFileSync(path.join(SQL_DIR, "schema.sql"), "utf8");
 const GATE_SQL = fs.readFileSync(path.join(SQL_DIR, "publish_gate.sql"), "utf8");
 const PUBLISH_TXN_SQL = fs.readFileSync(path.join(SQL_DIR, "publish_txn.sql"), "utf8");
