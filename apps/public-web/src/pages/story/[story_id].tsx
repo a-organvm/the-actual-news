@@ -1,5 +1,11 @@
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { PublicSharePanel } from "../../components/PublicSharePanel";
+import { SiteShell } from "../../components/SiteShell";
+import { PUBLIC_API_URI } from "../../lib/env";
+import { absoluteUrl, publicFeedItemById, publicSharePacket, publicStoryBundle, socialCardPath, type PublicSharePacket } from "../../lib/public-feed";
+import { newsArticleJsonLd } from "../../lib/public-structured-data";
 
 type StoryBundle = {
   story: {
@@ -28,82 +34,160 @@ type StoryBundle = {
   }[];
 };
 
-const API_URI = process.env.NEXT_PUBLIC_PUBLIC_API_URI ?? "http://localhost:8080";
+type StoryPageProps = {
+  initialBundle: StoryBundle | null;
+  initialSharePacket: PublicSharePacket | null;
+};
 
-export default function StoryPage() {
+export default function StoryPage({ initialBundle, initialSharePacket }: StoryPageProps) {
   const router = useRouter();
   const { story_id } = router.query;
-  const [bundle, setBundle] = useState<StoryBundle | null>(null);
+  const [bundle, setBundle] = useState<StoryBundle | null>(initialBundle);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!story_id) return;
-    fetch(`${API_URI}/v1/story/${story_id}`)
+    if (!story_id || initialBundle?.story.story_id === story_id) return;
+    fetch(`${PUBLIC_API_URI}/v1/story/${story_id}`)
       .then((r) => r.json())
       .then((data) => setBundle(data))
       .catch((e) => setError(String(e)));
-  }, [story_id]);
+  }, [initialBundle?.story.story_id, story_id]);
 
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-  if (!bundle) return <p>Loading...</p>;
+  if (error) {
+    return (
+      <SiteShell title="Story not found | The Actual News" path={story_id ? `/story/${story_id}` : "/story"}>
+        <main className="content-page">
+          <a className="back-link" href="/">Back to feed</a>
+          <p className="error-state">Error: {error}</p>
+        </main>
+      </SiteShell>
+    );
+  }
+
+  if (!bundle) {
+    return (
+      <SiteShell title="Loading story | The Actual News" path={story_id ? `/story/${story_id}` : "/story"}>
+        <main className="content-page">
+          <p className="empty-state">Loading story bundle...</p>
+        </main>
+      </SiteShell>
+    );
+  }
 
   const latestVersion = bundle.story.versions[0];
+  const feedItem = publicFeedItemById(bundle.story.story_id);
+  const description =
+    feedItem?.summary ??
+    latestVersion?.body_markdown.slice(0, 180) ??
+    "A public story bundle with narrative, claims, evidence edges, and correction history.";
+  const imagePath = socialCardPath({
+    title: bundle.story.title,
+    kicker: feedItem?.kicker ?? "Public story ledger",
+    state: bundle.story.state
+  });
+  const publishedTime = latestVersion?.created_at ?? feedItem?.publishedAt ?? "2026-06-02T12:00:00.000Z";
+  const sharePacket =
+    initialSharePacket ??
+    (feedItem
+      ? publicSharePacket(feedItem)
+      : {
+          clip_url: absoluteUrl(`/clip/${bundle.story.story_id}`),
+          story_url: absoluteUrl(`/story/${bundle.story.story_id}`),
+          social_card_url: absoluteUrl(imagePath),
+          share_text: `${bundle.story.title}: ${description}`,
+          channels: {
+            x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${bundle.story.title}: ${description}`)}&url=${encodeURIComponent(absoluteUrl(`/clip/${bundle.story.story_id}`))}`,
+            linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(absoluteUrl(`/clip/${bundle.story.story_id}`))}`,
+            email: `mailto:?subject=${encodeURIComponent(bundle.story.title)}&body=${encodeURIComponent(`${bundle.story.title}: ${description}`)}%0A%0A${encodeURIComponent(absoluteUrl(`/clip/${bundle.story.story_id}`))}`
+          }
+        });
 
   return (
-    <main style={{ maxWidth: 960, margin: "0 auto", padding: "2rem", fontFamily: "system-ui" }}>
-      <a href="/" style={{ color: "#666", textDecoration: "none" }}>&larr; Feed</a>
-      <h1>{bundle.story.title}</h1>
-      <span style={{ background: bundle.story.state === "published" ? "#e6f4ea" : "#fff3e0", padding: "2px 8px", borderRadius: 4, fontSize: "0.85rem" }}>
-        {bundle.story.state}
-      </span>
+    <SiteShell
+      title={`${bundle.story.title} | The Actual News`}
+      description={description}
+      path={`/story/${bundle.story.story_id}`}
+      imagePath={imagePath}
+      ogType="article"
+      publishedTime={publishedTime}
+      modifiedTime={publishedTime}
+      structuredData={newsArticleJsonLd({
+        title: bundle.story.title,
+        description,
+        path: `/story/${bundle.story.story_id}`,
+        imagePath,
+        publishedTime,
+        modifiedTime: publishedTime
+      })}
+    >
+      <main className="content-page content-page--wide">
+        <a className="back-link" href="/">Back to feed</a>
+        <h1>{bundle.story.title}</h1>
+        <p className="lede">Narrative, claim ledger, evidence edges, and correction history from the public gateway.</p>
+        <span className={`status-pill status-pill--${bundle.story.state}`}>{bundle.story.state}</span>
+        <PublicSharePanel title={bundle.story.title} atomId={bundle.story.story_id} packet={sharePacket} />
 
-      {latestVersion && (
-        <section style={{ marginTop: "2rem" }}>
-          <h2>Narrative</h2>
-          <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{latestVersion.body_markdown}</div>
-        </section>
-      )}
-
-      <section style={{ marginTop: "2rem" }}>
-        <h2>Verification Spine</h2>
-        <h3>Claims ({bundle.claims.length})</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "2px solid #333", textAlign: "left" }}>
-              <th style={{ padding: "0.5rem" }}>Claim</th>
-              <th style={{ padding: "0.5rem" }}>Type</th>
-              <th style={{ padding: "0.5rem" }}>Status</th>
-              <th style={{ padding: "0.5rem" }}>Evidence</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bundle.claims.map((c) => {
-              const edges = bundle.evidence_edges.filter((e) => e.claim_id === c.claim_id);
-              return (
-                <tr key={c.claim_id} style={{ borderBottom: "1px solid #eee" }}>
-                  <td style={{ padding: "0.5rem" }}>{c.text}</td>
-                  <td style={{ padding: "0.5rem" }}>{c.claim_type}</td>
-                  <td style={{ padding: "0.5rem" }}>{c.support_status}</td>
-                  <td style={{ padding: "0.5rem" }}>{edges.length} edge(s)</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-
-        {bundle.corrections.length > 0 && (
-          <>
-            <h3>Corrections ({bundle.corrections.length})</h3>
-            <ul>
-              {bundle.corrections.map((cor) => (
-                <li key={cor.correction_id}>
-                  <strong>{cor.reason}</strong> — {new Date(cor.created_at).toLocaleDateString()}
-                </li>
-              ))}
-            </ul>
-          </>
+        {latestVersion && (
+          <section className="panel">
+            <h2>Narrative</h2>
+            <div className="story-body">{latestVersion.body_markdown}</div>
+          </section>
         )}
-      </section>
-    </main>
+
+        <section className="panel">
+          <h2>Verification spine</h2>
+          <h3>Claims ({bundle.claims.length})</h3>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Claim</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bundle.claims.map((c) => {
+                const edges = bundle.evidence_edges.filter((e) => e.claim_id === c.claim_id);
+                return (
+                  <tr key={c.claim_id}>
+                    <td>{c.text}</td>
+                    <td>{c.claim_type}</td>
+                    <td>{c.support_status}</td>
+                    <td>{edges.length} edge(s)</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          {bundle.corrections.length > 0 && (
+            <>
+              <h3>Corrections ({bundle.corrections.length})</h3>
+              <ul>
+                {bundle.corrections.map((cor) => (
+                  <li key={cor.correction_id}>
+                    <strong>{cor.reason}</strong> - {new Date(cor.created_at).toLocaleDateString()}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      </main>
+    </SiteShell>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<StoryPageProps> = async ({ params }) => {
+  const storyId = Array.isArray(params?.story_id) ? params?.story_id[0] : params?.story_id;
+  const initialBundle = publicStoryBundle(storyId ?? "") as StoryBundle | null;
+  const feedItem = publicFeedItemById(storyId ?? "");
+
+  return {
+    props: {
+      initialBundle,
+      initialSharePacket: feedItem ? publicSharePacket(feedItem) : null
+    }
+  };
+};
