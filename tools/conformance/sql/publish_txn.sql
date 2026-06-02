@@ -1,6 +1,6 @@
 WITH
 story_lock AS (
-  SELECT s.story_id, s.platform_id
+  SELECT s.story_id, s.platform_id, s.state
   FROM stories s
   WHERE s.platform_id = $1 AND s.story_id = $2
   FOR UPDATE
@@ -116,6 +116,9 @@ outbox AS (
   RETURNING event_id
 )
 SELECT
-  (SELECT state FROM stories WHERE platform_id = $1 AND story_id = $2) AS story_state,
-  (SELECT COUNT(*)::int FROM event_outbox WHERE platform_id = $1 AND event_type = 'story.published.v1') AS outbox_count,
+  COALESCE(
+    (SELECT 'published' FROM updated_story LIMIT 1),
+    (SELECT state FROM story_lock LIMIT 1)
+  ) AS story_state,
+  (SELECT COUNT(*)::int FROM outbox) AS outbox_count,
   (SELECT pass FROM gate) AS publish_gate_pass;
