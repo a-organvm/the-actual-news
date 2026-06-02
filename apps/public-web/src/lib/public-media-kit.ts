@@ -51,6 +51,8 @@ export function publicMediaKit() {
       "/distribution",
       "/campaigns.json",
       "/share-kit.json",
+      "/provider-pages",
+      "/provider-handoff.json",
       "/sponsors",
       "/sponsors.json",
       "/principles",

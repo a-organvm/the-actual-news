@@ -37,6 +37,9 @@ export function ConversionLink({
       <span className="conversion-link conversion-link--pending">
         <span className="button button--disabled">{fallbackLabel ?? `${label} coming soon`}</span>
         {fallbackNote && <span className="conversion-link__note">{fallbackNote}</span>}
+        <a className="conversion-link__setup" href="/provider-pages">
+          Provider setup packet
+        </a>
       </span>
     );
   }

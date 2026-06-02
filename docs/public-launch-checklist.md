@@ -62,7 +62,7 @@ ANALYTICS_DOMAIN=theactual.news \
 pnpm public-env:template > .env.public
 ```
 
-Replace the provider example hosts with real hosted provider URLs before strict launch checks. The strict checker rejects blank, local, placeholder example hosts, and same-origin public app fallback routes such as `/briefing`, `/membership`, `/sponsor`, `/media-kit`, `/go/*`, `/api/*`, and `/v1/*`.
+Replace the provider example hosts with real hosted provider URLs before strict launch checks. The strict checker rejects blank, local, placeholder example hosts, and same-origin public app fallback routes such as `/briefing`, `/membership`, `/sponsor`, `/media-kit`, `/provider-pages`, `/go/*`, `/api/*`, and `/v1/*`.
 
 Strict mode expects real public URLs for:
 
@@ -138,6 +138,7 @@ The reader-facing app should expose:
 - `/launch.json` public-safe machine-readable launch/distribution manifest with growth capability flags, atom share packets, public offer packets, and conversion steps
 - `/media-kit` public positioning, proof points, press copy, sponsor-safe boundary notes, and public asset links for press, partners, and sponsors
 - `/media-kit.json` public-safe machine-readable media kit for distribution automation
+- `/provider-pages` human-readable hosted provider setup packet for newsletter, membership, and sponsor pages
 - `/runbook.json` public-safe machine-readable launch runbook with operator steps, commands, blockers, and internal-boundary notes
 - `/provider-handoff.json` public-safe machine-readable provider page handoff with copy, fields, attribution, acceptance criteria, and internal-boundary warnings
 - `/share-kit.json` public-safe machine-readable share packet for social/POSSE automation with launch copy, atom packets, campaign packets, offer packets, and conversion steps
@@ -190,6 +191,7 @@ Do not set those environment variables to `/go/*` routes or to the app's own `/b
 
 Use `docs/revenue-provider-onboarding.md` as the operator checklist for creating those hosted destinations and keeping provider secrets internal.
 Use `docs/provider-page-specs.md` as the copy-and-field spec for the hosted newsletter, membership, and sponsor provider pages.
+Use `/provider-pages` as the human-readable public setup packet for partners or operators who need copy-ready provider instructions.
 Use `/provider-handoff.json` as the public-safe machine-readable version of the provider setup packet.
 Use `/runbook.json` as the public-safe machine-readable operator runbook for launch steps, commands, blockers, and artifact links.
 Use `/campaigns.json` as the public-safe campaign queue for recurring atom pushes, briefing capture, membership asks, and sponsor outreach.
@@ -214,7 +216,7 @@ The public app can link to hosted provider pages. It should not process private 
 
 The `/launch` route renders the current public readiness state from browser-safe environment variables and links operators to `/launch.json`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/distribution`, and feed endpoints. It is intentionally safe to expose because it reports only public URLs, configured/not-configured status, artifact links, and high-level boundary categories. It must not include connection strings, tokens, secret names, or operational credentials.
 
-The `/launch.json` route exposes the same launch state for automation. Distribution jobs may consume it for growth capability flags, public routes, feeds, atom share packets, public offer packets, conversion steps, conversion route status, campaign packets, media-kit data, and public event names. `/runbook.json` exposes public launch steps, commands, blockers, artifact links, and internal-boundary notes. `/share-kit.json` exposes the narrower public sharing packet for social/POSSE automation: launch copy, tracked public routes, atoms, share packets, social-card paths, campaign packets, media-kit data, offer packets, and conversion steps. `/provider-handoff.json` exposes the provider setup packets for hosted newsletter, membership, and sponsor pages: public copy, fields, UTM parameter names, acceptance criteria, and internal-boundary warnings. `/campaigns.json` exposes recurring public campaign packets with copy, cadence, channel, tracked path, content id, and conversion target. `/media-kit.json` exposes public positioning, proof points, press copy, public asset links, and boundary warnings. `/sponsors.json` exposes disclosure-ready sponsor status, public sponsor lanes, and firewall rules. These routes must stay browser-safe and must not include internal hostnames, database URLs, credentials, reviewer queues, private traffic dashboards, private audience exports, private sponsor notes, contracts, banking details, or user data.
+The `/launch.json` route exposes the same launch state for automation. Distribution jobs may consume it for growth capability flags, public routes, feeds, atom share packets, public offer packets, conversion steps, conversion route status, campaign packets, media-kit data, and public event names. `/runbook.json` exposes public launch steps, commands, blockers, artifact links, and internal-boundary notes. `/share-kit.json` exposes the narrower public sharing packet for social/POSSE automation: launch copy, tracked public routes, atoms, share packets, social-card paths, campaign packets, media-kit data, offer packets, and conversion steps. `/provider-handoff.json` exposes the provider setup packets for hosted newsletter, membership, and sponsor pages: public copy, fields, UTM parameter names, acceptance criteria, and internal-boundary warnings. `/provider-pages` renders the same setup packet for humans and partner operators. `/campaigns.json` exposes recurring public campaign packets with copy, cadence, channel, tracked path, content id, and conversion target. `/media-kit.json` exposes public positioning, proof points, press copy, public asset links, and boundary warnings. `/sponsors.json` exposes disclosure-ready sponsor status, public sponsor lanes, and firewall rules. These routes must stay browser-safe and must not include internal hostnames, database URLs, credentials, reviewer queues, private traffic dashboards, private audience exports, private sponsor notes, contracts, banking details, or user data.
 
 ## Docker Position
 

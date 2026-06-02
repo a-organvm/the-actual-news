@@ -89,6 +89,7 @@ const checks = [
       "Product",
       "Offer",
       "Start membership",
+      ...(expectConversionsConfigured ? [] : ["Provider setup packet"]),
       ...(expectConversionsConfigured ? [] : ["Set NEXT_PUBLIC_MEMBERSHIP_URL"])
     ]
   },
@@ -102,6 +103,7 @@ const checks = [
       "Capture",
       "Product",
       "Join the Daily Briefing",
+      ...(expectConversionsConfigured ? [] : ["Provider setup packet"]),
       ...(expectConversionsConfigured ? [] : ["Set NEXT_PUBLIC_NEWSLETTER_URL"])
     ]
   },
@@ -115,6 +117,7 @@ const checks = [
       "Disclose",
       "Product",
       "Sponsor a Public-Interest Beat",
+      ...(expectConversionsConfigured ? [] : ["Provider setup packet"]),
       ...(expectConversionsConfigured ? [] : ["Set NEXT_PUBLIC_SPONSOR_URL"])
     ]
   },
@@ -253,6 +256,7 @@ const checks = [
       '"membership"',
       '"sponsor"',
       '"/provider-handoff.json"',
+      '"/provider-pages"',
       '"/campaigns.json"',
       '"/media-kit"',
       '"/media-kit.json"',
@@ -291,6 +295,8 @@ const checks = [
       '"proof_points"',
       '"public_assets"',
       '"/distribution"',
+      '"/provider-pages"',
+      '"/provider-handoff.json"',
       '"/sponsors"',
       '"internal_boundary"',
       '"never_publish"',
@@ -356,6 +362,24 @@ const checks = [
       '"final_verification"',
       '"internal_boundary"',
       '"never_publish"'
+    ]
+  },
+  {
+    path: "/provider-pages",
+    contentType: "text/html",
+    includes: [
+      "Provider Pages",
+      "Hosted conversion setup",
+      "Setup packets",
+      "Join the Daily Briefing",
+      "Become a Founding Member",
+      "Sponsor a Public-Interest Beat",
+      "NEXT_PUBLIC_NEWSLETTER_URL",
+      "NEXT_PUBLIC_MEMBERSHIP_URL",
+      "NEXT_PUBLIC_SPONSOR_URL",
+      "Copy setup packet",
+      "Internal boundary",
+      "webhook secrets"
     ]
   },
   {
@@ -428,6 +452,7 @@ const checks = [
       "/campaigns.json",
       "/principles",
       "/provider-handoff.json",
+      "/provider-pages",
       "/runbook.json",
       "/share-kit.json",
       "/icon.svg",
@@ -440,7 +465,7 @@ const checks = [
   {
     path: "/robots.txt",
     contentType: "text/plain",
-    includes: ["Sitemap:", "RSS:", "JSON-Feed:", "Distribution-Kit:", "Principles:", "Launch-Manifest:", "Launch-Runbook:", "Share-Kit:", "Provider-Handoff:", "Campaigns:", "Media-Kit:", "Media-Kit-JSON:", "Sponsor-Registry:", "Sponsor-Registry-JSON:", "Icon:", "Health:"]
+    includes: ["Sitemap:", "RSS:", "JSON-Feed:", "Distribution-Kit:", "Principles:", "Launch-Manifest:", "Launch-Runbook:", "Share-Kit:", "Provider-Handoff:", "Provider-Pages:", "Campaigns:", "Media-Kit:", "Media-Kit-JSON:", "Sponsor-Registry:", "Sponsor-Registry-JSON:", "Icon:", "Health:"]
   },
   {
     path: "/site.webmanifest",

@@ -8,9 +8,9 @@ Create hosted destinations for these three browser-safe variables:
 
 | Variable | Purpose | Hosted destination | Must not be |
 | --- | --- | --- | --- |
-| `NEXT_PUBLIC_NEWSLETTER_URL` | Owned audience capture | Newsletter signup form or landing page | `/briefing`, `/go/briefing`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit`, `/media-kit.json`, `/sponsors.json` |
-| `NEXT_PUBLIC_MEMBERSHIP_URL` | Reader revenue | Hosted checkout, membership page, OpenCollective, Patreon, or Stripe Payment Link | `/membership`, `/go/membership`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit`, `/media-kit.json`, `/sponsors.json` |
-| `NEXT_PUBLIC_SPONSOR_URL` | Sponsor revenue | Sponsor intake form, CRM form, calendar, or sponsorship packet | `/sponsor`, `/sponsors`, `/go/sponsor`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit`, `/media-kit.json`, `/sponsors.json` |
+| `NEXT_PUBLIC_NEWSLETTER_URL` | Owned audience capture | Newsletter signup form or landing page | `/briefing`, `/go/briefing`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/provider-pages`, `/campaigns.json`, `/media-kit`, `/media-kit.json`, `/sponsors.json` |
+| `NEXT_PUBLIC_MEMBERSHIP_URL` | Reader revenue | Hosted checkout, membership page, OpenCollective, Patreon, or Stripe Payment Link | `/membership`, `/go/membership`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/provider-pages`, `/campaigns.json`, `/media-kit`, `/media-kit.json`, `/sponsors.json` |
+| `NEXT_PUBLIC_SPONSOR_URL` | Sponsor revenue | Sponsor intake form, CRM form, calendar, or sponsorship packet | `/sponsor`, `/sponsors`, `/go/sponsor`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/provider-pages`, `/campaigns.json`, `/media-kit`, `/media-kit.json`, `/sponsors.json` |
 
 The public app uses `/go/briefing`, `/go/membership`, and `/go/sponsor` as stable distribution links. Those routes preserve UTM parameters and redirect to the hosted provider URLs after configuration. Do not set the provider variables back to the public app's own fallback routes.
 
@@ -29,9 +29,9 @@ The public app uses `/go/briefing`, `/go/membership`, and `/go/sponsor` as stabl
 7. Run the strict launch check against the actual public env file.
 
 Use `docs/provider-page-specs.md` for the exact page copy, required fields, attribution metadata, confirmation copy, and acceptance criteria for all three hosted provider destinations.
-The same public-safe setup packet is exposed at `/provider-handoff.json` for launch operators and distribution automation.
+The same public-safe setup packet is exposed at `/provider-pages` for human operators and `/provider-handoff.json` for launch operators and distribution automation.
 Use `/campaigns.json` after provider setup to feed recurring public campaign pushes for atom sharing, briefing capture, membership asks, and sponsor outreach.
-Use `/media-kit` and `/media-kit.json` for public press, partner, and sponsor outreach context; do not use them as provider conversion destinations.
+Use `/provider-pages`, `/media-kit`, and `/media-kit.json` for public press, partner, and sponsor outreach context; do not use them as provider conversion destinations.
 Use `/sponsors` and `/sponsors.json` to publish accepted sponsor disclosures and firewall terms before sponsor-funded work is fulfilled.
 
 ## Public Env Example
