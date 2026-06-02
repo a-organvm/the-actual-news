@@ -34,6 +34,12 @@ After deployment, prove the live public origin:
 PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
 ```
 
+Before custom-domain cutover, prove DNS and Worker readiness:
+
+```bash
+pnpm domain:doctor
+```
+
 For the current Cloudflare Workers preview origin, prove the full dynamic public app without requiring final provider URLs:
 
 ```bash
@@ -95,6 +101,7 @@ Local `pnpm -r test` still requires `POSTGRES_URI` because the conformance harne
 The workflow also has an optional, non-blocking container build job for the public web image and each internal service image. Docker image builds are packaging validation only; they are not required for frontend work or for deploying to a managed platform.
 
 Run `pnpm container:check` to audit optional Dockerfile and compose boundaries without installing Docker.
+Run `pnpm domain:doctor` to audit the canonical domain delegation, apex/www DNS records, live Worker health, and provider URL blockers before custom-domain launch.
 Run `pnpm conformance:doctor` before local conformance to verify both the `psql` client and `POSTGRES_URI`. The conformance harness creates isolated temporary schemas for its fixtures; `bash tools/migrate.sh` is still required when validating the application ledger schema itself.
 
 The public smoke gate verifies response hardening headers on every launch-critical route:

@@ -178,6 +178,7 @@ pnpm public-env:template > .env.public
 pnpm launch:local
 pnpm launch:report
 pnpm launch:check
+pnpm domain:doctor
 pnpm container:check
 pnpm launch:smoke
 PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
