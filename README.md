@@ -112,9 +112,83 @@ The platform is a TypeScript monorepo managed with pnpm workspaces, organized in
 
 The `apps/public-web/` directory contains a Next.js application providing three user-facing surfaces:
 
-- **Reader** (`/`) — Story feed ranked by quality signals, not engagement. Each story page displays the narrative with an expandable verification spine panel showing claims, evidence, and correction history.
-- **Verifier** (`/verify`) — Claim review queues, evidence gap alerts, and structured review submission forms.
+- **Reader** (`/`) — Public product homepage, story feed, audience capture, membership/sponsor calls to action, and a quality-ranked ledger rather than an engagement-ranked feed.
+- **Verifier** (`/verify`) — Internal claim review queues, evidence gap alerts, and structured review submission forms. This workspace is disabled by default in the public container.
 - **Story Detail** (`/story/[story_id]`) — Full story bundle display with claims, evidence edges, and corrections timeline.
+- **Distribution Kit** (`/distribution`) — Public share copy, atom share packets, offer packets, conversion steps, feeds, conversion routes, and boundary notes for launch distribution.
+- **Public Principles** (`/principles`) — Reader-facing editorial firewall, funding boundary, and public/internal separation.
+- **Launch Status** (`/launch`, `/launch.json`, `/share-kit.json`) — Public-safe readiness ledger and machine-readable sharing packet for audience, revenue, analytics, growth capabilities, share packets, offer packets, conversion steps, distribution routes, and deployment-boundary setup.
+
+### Productized Public Surface
+
+Docker is not required for the public website. The required local launch path is:
+
+```bash
+pnpm launch:local
+```
+
+After deployment, verify the live public origin with:
+
+```bash
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+```
+
+The public app can also be packaged separately from internal services when Docker is useful:
+
+```bash
+make up-public
+```
+
+Reader-safe configuration lives in `.env.public.example` and uses `NEXT_PUBLIC_*` values only. Internal service configuration lives in `.env.internal.example` and should be supplied from a secret manager in real deployments.
+
+The public revenue and audience loops are configured by URL, not by browser-side credentials:
+
+- `NEXT_PUBLIC_NEWSLETTER_URL`
+- `NEXT_PUBLIC_MEMBERSHIP_URL`
+- `NEXT_PUBLIC_SPONSOR_URL`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_ANALYTICS_DOMAIN`
+
+Public CTAs and atom-share links emit keyless, Plausible-compatible browser events when `NEXT_PUBLIC_ANALYTICS_DOMAIN` is configured. The default domain is the public site host; provider-side analytics setup remains external and must not put API keys in the public app. `NEXT_PUBLIC_ANALYTICS_SCRIPT_URL` must remain the CSP-allowed Plausible browser script URL.
+
+`/launch.json` exposes the same public-safe launch state for POSSE/distribution automation: ready counts, growth capability flags, public routes, feeds, atom share packets, public offer packets, conversion steps, conversion route status, public event names, and internal-boundary warnings. `/share-kit.json` exposes the narrower public sharing packet: launch copy, tracked public routes, atoms, social-card paths, share packets, public offers, conversion steps, and internal-boundary warnings. Neither route may include credentials, internal hostnames, reviewer queues, or user data.
+
+`/launch` is the human operator index for those artifacts. It links to `/launch.json`, `/share-kit.json`, `/distribution`, and feed endpoints while showing only public readiness status and boundary guidance.
+
+`/distribution` includes copy-ready controls for launch copy, public route URLs, atom URLs, atom text, and offer packets so social posts, newsletters, and partner handoffs do not require scraping rendered pages.
+
+Every public clip and story page also carries its own share panel: X, LinkedIn, email, social-card, copy URL, and copy text controls.
+
+`/principles` is the public trust page for the editorial firewall, funding boundary, correction visibility, and internal systems boundary.
+
+`/site.webmanifest` and `/icon.svg` provide branded install/bookmark metadata, public shortcuts, and share-target metadata without adding private configuration.
+
+Stable public conversion routes live at `/go/briefing`, `/go/membership`, and `/go/sponsor`. They preserve UTM parameters, redirect to hosted provider URLs when configured, and fall back to the matching public offer page while providers are pending.
+
+Set the provider env URLs to hosted signup, checkout, membership, or intake destinations; do not point them back to `/go/*`, `/briefing`, `/membership`, `/sponsor`, `/api/*`, or `/v1/*` on the public app.
+
+The public web app also serves a reader-safe same-origin API at `/v1/feed` and `/v1/story/:story_id`, so an initial public launch can use the web origin as `NEXT_PUBLIC_PUBLIC_API_URI` before a separate gateway is deployed.
+
+The public smoke gate also verifies response hardening headers and scans launch-critical responses for credential-like values or internal configuration names.
+
+The conversion boundary gate verifies that same-origin fake provider URLs stay pending, hosted provider URLs mark launch health ready, and `/go/*` redirects preserve UTM attribution.
+
+`pnpm launch:report` writes `docs/public-launch-report.md`, a current public launch handoff covering blockers, public routes, audience/revenue links, and internal-only values.
+
+See `docs/deployment-boundaries.md` for the public/internal split.
+See `docs/public-launch-checklist.md` for the public launch gate and revenue/audience readiness checks.
+
+Generate the public-only launch env template with:
+
+```bash
+pnpm public-env:template > .env.public
+pnpm launch:local
+pnpm launch:report
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+```
+
+The `.github/workflows/public-launch.yml` workflow runs the required public launch gates and database-backed conformance checks on pull requests and pushes. It also has a non-blocking container build job for packaging validation.
+The workflow uploads public launch report artifacts for both the default example env and the strict generated public env template.
 
 ### Event-Driven Pipeline
 
@@ -278,12 +352,14 @@ The platform ships with seven conformance tests (`CT-01` through `CT-07`) that v
 Run the conformance suite:
 
 ```bash
+pnpm conformance:doctor
+bash tools/migrate.sh
 make test
-# or directly:
-node tools/conformance/run.mjs
+# Or directly:
+pnpm conformance:test
 ```
 
-The CI pipeline runs these tests against a live PostgreSQL 16 instance on every push and pull request.
+`pnpm conformance:doctor` verifies that `psql` is on `PATH` and `POSTGRES_URI` points at a reachable database before local migrations and DB-backed tests. The CI pipeline runs these tests against a live PostgreSQL 16 instance on every push and pull request.
 
 ---
 
@@ -340,7 +416,7 @@ the-actual-news/
 
 - **Node.js** >= 20
 - **pnpm** >= 9
-- **Docker** and **Docker Compose** (for PostgreSQL)
+- Optional: **Docker** and **Docker Compose** if you want local containerized PostgreSQL or to reproduce image packaging checks. Docker is not required for the public website launch gate.
 
 ### Setup
 
@@ -356,10 +432,10 @@ pnpm install
 cp .env.example .env
 # Edit .env if needed (defaults work for local development)
 
-# Start infrastructure (PostgreSQL)
+# Optional: start Docker-managed infrastructure (PostgreSQL), or use any hosted/local Postgres and set POSTGRES_URI
 make up
 
-# Apply database migrations
+# Apply database migrations after POSTGRES_URI points at a reachable database
 make migrate
 
 # Run conformance tests to verify setup
@@ -392,7 +468,7 @@ curl http://localhost:8080/v1/feed?scope=local
 
 | Target | Description |
 |--------|-------------|
-| `make up` | Start Docker infrastructure (PostgreSQL) |
+| `make up` | Optional: start Docker infrastructure (PostgreSQL) |
 | `make down` | Stop and remove Docker volumes |
 | `make migrate` | Apply database migrations |
 | `make reset` | Full reset: down + up + migrate |

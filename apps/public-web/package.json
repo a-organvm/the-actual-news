@@ -5,18 +5,24 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "cloudflare:build": "NEXT_PUBLIC_PLATFORM_ID=plf_cloudflare_public_01 NEXT_PUBLIC_SITE_URL=https://the-actual-news-public.ivixivi.workers.dev NEXT_PUBLIC_PUBLIC_API_URI=https://the-actual-news-public.ivixivi.workers.dev NEXT_PUBLIC_ENABLE_VERIFIER_WORKSPACE=false opennextjs-cloudflare build",
+    "cloudflare:deploy": "opennextjs-cloudflare deploy",
+    "cloudflare:preview": "opennextjs-cloudflare preview",
     "start": "next start",
+    "smoke": "node ../../tools/public-web/smoke.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "^16.2.3",
+    "next": "^16.2.7",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "1.19.11",
     "@types/node": "^25.2.3",
     "@types/react": "^19.2.3",
     "@types/react-dom": "^19.2.3",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "wrangler": "4.97.0"
   }
 }
