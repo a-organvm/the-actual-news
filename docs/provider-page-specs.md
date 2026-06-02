@@ -4,12 +4,12 @@ These specs are the public-safe handoff for creating hosted newsletter, membersh
 
 Keep provider API keys, webhook secrets, CRM tokens, payment credentials, fulfillment credentials, and database URLs out of these pages and out of `.env.public`.
 
-The public app also exposes the same setup packet as machine-readable JSON at `/provider-handoff.json` for launch operators and distribution automation.
+The public app also exposes the same setup packet as a human-readable page at `/provider-pages` and machine-readable JSON at `/provider-handoff.json` for launch operators and distribution automation.
 
 ## Shared Requirements
 
 - Each provider URL must be HTTPS and hosted outside this app.
-- Do not point provider URLs to `/briefing`, `/membership`, `/sponsor`, `/sponsors`, `/media-kit`, `/go/*`, `/api/*`, `/v1/*`, `/launch.json`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit.json`, or `/sponsors.json`.
+- Do not point provider URLs to `/briefing`, `/membership`, `/sponsor`, `/sponsors`, `/media-kit`, `/provider-pages`, `/go/*`, `/api/*`, `/v1/*`, `/launch.json`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit.json`, or `/sponsors.json`.
 - Preserve these attribution parameters on the provider side: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`.
 - Use the public distribution URLs in campaign copy: `/go/briefing`, `/go/membership`, and `/go/sponsor`.
 - Keep all payment, email, CRM, webhook, and fulfillment automation behind the provider or an internal service.

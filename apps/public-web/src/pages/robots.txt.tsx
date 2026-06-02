@@ -23,6 +23,7 @@ Media-Kit: ${baseUrl}/media-kit
 Media-Kit-JSON: ${baseUrl}/media-kit.json
 Share-Kit: ${baseUrl}/share-kit.json
 Provider-Handoff: ${baseUrl}/provider-handoff.json
+Provider-Pages: ${baseUrl}/provider-pages
 Campaigns: ${baseUrl}/campaigns.json
 Sponsor-Registry: ${baseUrl}/sponsors
 Sponsor-Registry-JSON: ${baseUrl}/sponsors.json

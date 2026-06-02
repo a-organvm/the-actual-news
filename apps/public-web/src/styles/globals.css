@@ -831,6 +831,92 @@ textarea {
   font-size: 0.82rem;
 }
 
+.conversion-link__setup {
+  color: var(--color-primary-strong);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.provider-packet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.provider-packet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  border: 1px solid var(--color-border);
+  background:
+    linear-gradient(rgba(253, 253, 249, 0.88), rgba(253, 253, 249, 0.88)),
+    var(--pattern-crosshatch);
+  padding: var(--space-md);
+}
+
+.provider-packet h2,
+.provider-packet h3,
+.provider-packet p {
+  margin-top: 0;
+}
+
+.provider-packet h2 {
+  margin-bottom: var(--space-sm);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.provider-packet h3 {
+  margin-bottom: var(--space-xs);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.provider-packet__ledger {
+  display: grid;
+  gap: var(--space-xs);
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-sm) 0;
+}
+
+.provider-packet__ledger div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-sm);
+}
+
+.provider-packet__ledger dt {
+  color: var(--color-muted);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.provider-packet__ledger dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.provider-packet__section {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.88rem;
+}
+
+.provider-packet__section ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.provider-packet__section li + li {
+  margin-top: var(--space-xs);
+}
+
 .offer-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1484,6 +1570,14 @@ textarea {
   }
 
   .offer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .provider-packet-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .provider-packet__ledger div {
     grid-template-columns: 1fr;
   }
 

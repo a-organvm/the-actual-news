@@ -1,6 +1,6 @@
 # Public Launch Report
 
-Generated: 2026-06-02T18:35:55.549Z
+Generated: 2026-06-02T19:56:14.695Z
 
 Environment source: `.env.public.example`
 
@@ -42,6 +42,7 @@ These routes are public-safe and covered by the public smoke gate:
 - `/membership`
 - `/principles`
 - `/provider-handoff.json`
+- `/provider-pages`
 - `/runbook.json`
 - `/share-kit.json`
 - `/sponsor`
@@ -64,18 +65,19 @@ These routes are public-safe and covered by the public smoke gate:
 
 - Stable distribution URLs: `/go/briefing`, `/go/membership`, `/go/sponsor`
 - Growth capability flags in `/api/healthz` and `/launch.json`: share packets, share kit, provider handoff, campaign packets, media kit, sponsor registry, offer packets, structured data, feeds, and conversion routes
-- Public readiness ledger: `/launch` links operators to `/launch.json`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit`, `/distribution`, and feed endpoints
+- Public readiness ledger: `/launch` links operators to `/launch.json`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/provider-pages`, `/campaigns.json`, `/media-kit`, `/distribution`, and feed endpoints
 - Public principles: `/principles` explains the editorial firewall, funding boundary, and public/internal separation
 - Sponsor registry: `/sponsors` and `/sponsors.json` expose disclosure-ready sponsor status, sponsor lanes, and firewall rules
 - Media kit: `/media-kit` and `/media-kit.json` expose public positioning, proof points, press copy, and sponsor-safe boundary notes
 - Install metadata: `/site.webmanifest` and `/icon.svg` provide public-safe branded install/bookmark assets and shortcuts
-- Discoverability endpoints: `/sitemap.xml` includes public offer, conversion, clip, story, sponsor registry, media-kit, share-kit, provider-handoff, and campaign URLs; `/robots.txt` advertises sitemap, RSS, JSON Feed, distribution kit, launch manifest, share kit, provider handoff, campaigns, media kit, sponsor registry, and health
+- Discoverability endpoints: `/sitemap.xml` includes public offer, conversion, clip, story, sponsor registry, media-kit, share-kit, provider-handoff, provider-pages, and campaign URLs; `/robots.txt` advertises sitemap, RSS, JSON Feed, distribution kit, launch manifest, share kit, provider handoff, provider pages, campaigns, media kit, sponsor registry, and health
 - Atom share packets in `/distribution` and `/launch.json`: clip URL, story URL, social-card URL, X share URL, LinkedIn share URL, and email share URL
 - Viral entry pages: public clip and story pages expose X, LinkedIn, email, card, copy URL, and copy text controls
 - Copy-ready distribution controls: `/distribution` exposes copy buttons for launch copy, public route URLs, atom URLs, atom text, and offer packets
 - Machine-readable share kit: `/share-kit.json` exposes public launch copy, routes, atoms, campaign packets, offer packets, and the internal boundary for social automation
 - Machine-readable media kit: `/media-kit.json` exposes public positioning, proof points, press copy, public assets, sponsor-safe notes, and the internal boundary for press, partner, and sponsor outreach
 - Machine-readable provider handoff: `/provider-handoff.json` exposes public provider page copy, fields, attribution parameters, acceptance criteria, and internal-boundary warnings
+- Human-readable provider pages: `/provider-pages` exposes copy-ready setup packets for newsletter, membership, and sponsor providers without publishing provider credentials or private records
 - Machine-readable launch runbook: `/runbook.json` exposes operator steps, public commands, blockers, and boundary notes
 - Machine-readable campaign kit: `/campaigns.json` exposes recurring public campaign packets for atom, briefing, membership, and sponsor distribution
 - Machine-readable sponsor registry: `/sponsors.json` exposes disclosure-ready sponsor status, sponsor lanes, firewall rules, and public/internal boundary warnings

@@ -20,6 +20,7 @@ const staticEntries: SitemapEntry[] = [
   { path: "/media-kit", changefreq: "weekly", priority: "0.7" },
   { path: "/media-kit.json", changefreq: "daily", priority: "0.5" },
   { path: "/provider-handoff.json", changefreq: "daily", priority: "0.6" },
+  { path: "/provider-pages", changefreq: "weekly", priority: "0.7" },
   { path: "/runbook.json", changefreq: "daily", priority: "0.5" },
   { path: "/share-kit.json", changefreq: "daily", priority: "0.6" },
   { path: "/sponsors", changefreq: "weekly", priority: "0.7" },

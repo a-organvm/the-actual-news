@@ -96,6 +96,7 @@ const publicPaths = [
   "/membership",
   "/principles",
   "/provider-handoff.json",
+  "/provider-pages",
   "/runbook.json",
   "/share-kit.json",
   "/sponsor",

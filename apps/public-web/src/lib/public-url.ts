@@ -33,6 +33,7 @@ const publicAppRoutePatterns = [
   /^\/media-kit(?:\.json|\/?)$/,
   /^\/membership\/?$/,
   /^\/provider-handoff\.json$/,
+  /^\/provider-pages\/?$/,
   /^\/robots\.txt$/,
   /^\/runbook\.json$/,
   /^\/share-kit\.json$/,

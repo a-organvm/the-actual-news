@@ -95,6 +95,7 @@ Public deployments should expose only:
 - `GET /media-kit.json`
 - `GET /runbook.json`
 - `GET /provider-handoff.json`
+- `GET /provider-pages`
 - `GET /share-kit.json`
 - `GET /v1/feed`
 - `GET /v1/story/:story_id`
@@ -106,11 +107,11 @@ Public responses include security headers for content-type sniffing, framing, re
 
 The `/launch` route is a reader-safe readiness ledger for the public surface. It may show configured/not-configured status and public URLs, but it must not show internal hostnames, database URLs, tokens, webhook secrets, or service credentials.
 
-The `/launch.json` route is the automation-safe equivalent for distribution systems. It can expose ready counts, growth capability flags, public routes, feed URLs, atom share packets, public offer packets, conversion steps, conversion route status, public campaign packets, media-kit data, public analytics event names, and internal-boundary warnings. The `/runbook.json` route can expose public launch steps, commands, blockers, artifact links, and boundary notes. The `/share-kit.json` route is the narrower social/POSSE sharing packet and can expose public launch copy, tracked public routes, atoms, social-card paths, share packets, campaign packets, media-kit data, offer packets, conversion steps, and boundary warnings. The `/provider-handoff.json` route can expose hosted provider setup copy, fields, UTM parameter names, acceptance criteria, provider configured booleans, and boundary warnings. The `/campaigns.json` route can expose campaign copy, cadence, public tracked paths, content ids, conversion targets, and public boundary warnings. The `/media-kit.json` route can expose public positioning, proof points, press copy, public asset links, sponsor-safe boundary notes, and public boundary warnings. The `/sponsors.json` route can expose disclosure-ready sponsor status, accepted sponsor disclosures, sponsor lanes, and firewall rules. These routes may not expose secrets, internal network names, reviewer queues, user identifiers, private traffic dashboards, private audience exports, private sponsor notes, contracts, banking details, ad account credentials, or raw operational configuration.
+The `/launch.json` route is the automation-safe equivalent for distribution systems. It can expose ready counts, growth capability flags, public routes, feed URLs, atom share packets, public offer packets, conversion steps, conversion route status, public campaign packets, media-kit data, public analytics event names, and internal-boundary warnings. The `/runbook.json` route can expose public launch steps, commands, blockers, artifact links, and boundary notes. The `/share-kit.json` route is the narrower social/POSSE sharing packet and can expose public launch copy, tracked public routes, atoms, social-card paths, share packets, campaign packets, media-kit data, offer packets, conversion steps, and boundary warnings. The `/provider-handoff.json` route can expose hosted provider setup copy, fields, UTM parameter names, acceptance criteria, provider configured booleans, and boundary warnings. The `/provider-pages` route can render that provider setup packet for human partner/operator setup. The `/campaigns.json` route can expose campaign copy, cadence, public tracked paths, content ids, conversion targets, and public boundary warnings. The `/media-kit.json` route can expose public positioning, proof points, press copy, public asset links, sponsor-safe boundary notes, and public boundary warnings. The `/sponsors.json` route can expose disclosure-ready sponsor status, accepted sponsor disclosures, sponsor lanes, and firewall rules. These routes may not expose secrets, internal network names, reviewer queues, user identifiers, private traffic dashboards, private audience exports, private sponsor notes, contracts, banking details, ad account credentials, or raw operational configuration.
 
 The `/go/*` conversion routes are public and stable. They preserve attribution parameters and redirect only to configured public hosted provider URLs; until then, they fall back to local offer pages. They must not proxy private payment, email, CRM, or webhook operations.
 
-The configured provider URLs must be hosted destinations, not same-origin app routes. `NEXT_PUBLIC_NEWSLETTER_URL`, `NEXT_PUBLIC_MEMBERSHIP_URL`, and `NEXT_PUBLIC_SPONSOR_URL` should not point to `/briefing`, `/membership`, `/sponsor`, `/sponsors`, `/media-kit`, `/go/*`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit.json`, or `/sponsors.json` on the public site.
+The configured provider URLs must be hosted destinations, not same-origin app routes. `NEXT_PUBLIC_NEWSLETTER_URL`, `NEXT_PUBLIC_MEMBERSHIP_URL`, and `NEXT_PUBLIC_SPONSOR_URL` should not point to `/briefing`, `/membership`, `/sponsor`, `/sponsors`, `/media-kit`, `/provider-pages`, `/go/*`, `/api/*`, `/v1/*`, `/runbook.json`, `/share-kit.json`, `/provider-handoff.json`, `/campaigns.json`, `/media-kit.json`, or `/sponsors.json` on the public site.
 
 The public app may serve the initial reader-safe API from the same origin at `/v1/feed` and `/v1/story/:story_id`. Those routes must expose only published public story bundles and must not expose draft content, reviewer assignments, ingestion state, database details, or internal service topology.
 
@@ -168,7 +169,7 @@ Current public offer packaging is intentionally descriptive and keyless:
 
 When real payment/newsletter/CRM providers are selected, keep the app's offer pages as the public copy layer and point their `NEXT_PUBLIC_*_URL` values to hosted provider pages. Do not point those variables back to the public app's fallback routes, and do not embed provider secrets in the public app.
 
-See `docs/revenue-provider-onboarding.md` for the provider setup checklist and the exact public/internal split for hosted checkout, newsletter, and CRM intake pages.
+See `docs/revenue-provider-onboarding.md` and `/provider-pages` for the provider setup checklist and the exact public/internal split for hosted checkout, newsletter, and CRM intake pages.
 
 Use the launch readiness checker to make provider gaps explicit:
 

@@ -69,6 +69,7 @@ export function SiteShell({
             <Link href="/feed.xml">RSS</Link>
             <Link href="/feed.json">JSON Feed</Link>
             <Link href="/distribution">Distribution Kit</Link>
+            <Link href="/provider-pages">Provider Pages</Link>
             <Link href="/sponsors">Sponsor Registry</Link>
             <Link href="/media-kit">Media Kit</Link>
             <Link href="/principles">Principles</Link>
