@@ -27,7 +27,7 @@ migrate:
 reset: down up migrate
 
 lint:
-	npx @redocly/cli lint contracts/openapi/*.yaml
+	npx @redocly/cli lint
 
 test:
 	node tools/conformance/run.mjs

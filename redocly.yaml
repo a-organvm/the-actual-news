@@ -1,0 +1,26 @@
+# Redocly configuration for the-actual-news OpenAPI contracts.
+#
+# Only the service entrypoints are linted here. `common.openapi.yaml` is a
+# shared components fragment referenced via $ref by the entrypoints below; it
+# is intentionally NOT listed as an API, so it is resolved during linting but
+# not validated as a standalone document (which would spuriously fail the
+# struct / no-empty-servers rules since it has no paths or servers).
+apis:
+  claim:
+    root: contracts/openapi/claim.openapi.yaml
+  evidence:
+    root: contracts/openapi/evidence.openapi.yaml
+  gateway:
+    root: contracts/openapi/gateway.openapi.yaml
+  story:
+    root: contracts/openapi/story.openapi.yaml
+  verify:
+    root: contracts/openapi/verify.openapi.yaml
+
+extends:
+  - recommended
+
+rules:
+  # Error responses are encouraged but not enforced as a hard gate yet; surface
+  # them as warnings so they remain visible without blocking CI.
+  operation-4xx-response: warn

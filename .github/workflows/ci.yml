@@ -1,4 +1,4 @@
-name: TypeScript/Node.js CI
+name: CI
 
 on:
   push:
@@ -8,97 +8,85 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  quality:
+    name: Lint, typecheck, test, build
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        # Project engines require Node >=20; Node 18 is end-of-life.
+        node-version: [20.x, 22.x]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Detect package manager
-        id: detect
-        run: |
-          if [ -f "pnpm-lock.yaml" ]; then
-            echo "pm=pnpm" >> $GITHUB_OUTPUT
-          elif [ -f "yarn.lock" ]; then
-            echo "pm=yarn" >> $GITHUB_OUTPUT
-          elif [ -f "package-lock.json" ] || [ -f "package.json" ]; then
-            echo "pm=npm" >> $GITHUB_OUTPUT
-          else
-            echo "pm=none" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Install pnpm
-        if: steps.detect.outputs.pm == 'pnpm'
-        run: npm install -g pnpm
+          cache: pnpm
 
       - name: Install dependencies
-        if: steps.detect.outputs.pm != 'none'
-        run: |
-          if [ "${{ steps.detect.outputs.pm }}" == "pnpm" ]; then
-            pnpm install
-          elif [ "${{ steps.detect.outputs.pm }}" == "yarn" ]; then
-            yarn install
-          else
-            npm install
-          fi
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint with ESLint
-        if: steps.detect.outputs.pm != 'none'
-        run: |
-          if [ "${{ steps.detect.outputs.pm }}" == "pnpm" ]; then
-            pnpm run lint || echo "::warning::ESLint found issues"
-          elif [ "${{ steps.detect.outputs.pm }}" == "yarn" ]; then
-            yarn lint || echo "::warning::ESLint found issues"
-          else
-            npm run lint || echo "::warning::ESLint found issues"
-          fi
+      - name: Lint (ESLint)
+        run: pnpm lint
 
-      - name: Type check with tsc
-        if: steps.detect.outputs.pm != 'none' && hashFiles('tsconfig.json') != ''
-        run: |
-          if [ -f "tsconfig.json" ]; then
-            npx tsc --noEmit || echo "::warning::TypeScript found type errors"
-          else
-            echo "::notice::No tsconfig.json found, skipping type checking"
-          fi
+      - name: Lint OpenAPI contracts (Redocly)
+        run: pnpm lint:contracts
 
-      - name: Run tests
-        if: steps.detect.outputs.pm != 'none'
-        run: |
-          if [ "${{ steps.detect.outputs.pm }}" == "pnpm" ]; then
-            pnpm test -- --coverage || echo "::notice::No tests configured"
-          elif [ "${{ steps.detect.outputs.pm }}" == "yarn" ]; then
-            yarn test --coverage || echo "::notice::No tests configured"
-          else
-            npm test -- --coverage || echo "::notice::No tests configured"
-          fi
+      - name: Typecheck
+        run: pnpm typecheck
 
-      - name: Upload coverage to Codecov
-        if: success() && hashFiles('coverage/lcov.info') != ''
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
-          flags: unittests
-          name: codecov-${{ matrix.node-version }}
+      - name: Unit tests (services)
+        run: pnpm test:services
 
       - name: Build
-        if: steps.detect.outputs.pm != 'none'
-        run: |
-          if [ "${{ steps.detect.outputs.pm }}" == "pnpm" ]; then
-            pnpm run build || echo "::notice::No build script configured"
-          elif [ "${{ steps.detect.outputs.pm }}" == "yarn" ]; then
-            yarn build || echo "::notice::No build script configured"
-          else
-            npm run build || echo "::notice::No build script configured"
-          fi
+        run: pnpm build
+
+  conformance:
+    name: Ledger conformance (Postgres)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run conformance suite
+        env:
+          POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/postgres
+        run: pnpm conformance:test

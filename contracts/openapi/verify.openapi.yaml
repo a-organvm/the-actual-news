@@ -3,16 +3,26 @@ info:
   title: Verification Service
   version: "1.0.0"
 servers:
-  - url: ${VERIFY_BASE_URI}
+  - url: "{VERIFY_BASE_URI}"
+    description: Verification service base URI (injected per environment)
+    variables:
+      VERIFY_BASE_URI:
+        default: http://localhost:8004
+        description: Base URI of the Verification service deployment
+security:
+  - bearerAuth: []
 paths:
   /v1/health:
     get:
       operationId: verifyHealth
+      summary: Liveness/readiness probe for the Verification service
+      security: []
       responses: { "200": { description: ok } }
 
   /v1/tasks:
     get:
       operationId: listVerificationTasks
+      summary: List verification tasks, optionally filtered by status
       parameters:
         - in: query
           name: status
@@ -33,6 +43,7 @@ paths:
   /v1/tasks/{task_id}/review:
     post:
       operationId: submitReview
+      summary: Submit a reviewer verdict for a verification task
       parameters:
         - in: path
           name: task_id
@@ -51,6 +62,12 @@ paths:
               schema: { $ref: "#/components/schemas/Review" }
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service bearer token (internal mesh)
   schemas:
     VerificationTask:
       type: object

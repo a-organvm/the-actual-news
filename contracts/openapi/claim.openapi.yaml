@@ -3,16 +3,26 @@ info:
   title: Claim Service
   version: "1.0.0"
 servers:
-  - url: ${CLAIM_BASE_URI}
+  - url: "{CLAIM_BASE_URI}"
+    description: Claim service base URI (injected per environment)
+    variables:
+      CLAIM_BASE_URI:
+        default: http://localhost:8001
+        description: Base URI of the Claim service deployment
+security:
+  - bearerAuth: []
 paths:
   /v1/health:
     get:
       operationId: claimHealth
+      summary: Liveness/readiness probe for the Claim service
+      security: []
       responses: { "200": { description: ok } }
 
   /v1/extract:
     post:
       operationId: extractClaims
+      summary: Extract claims from a story version
       requestBody:
         required: true
         content:
@@ -32,6 +42,7 @@ paths:
   /v1/stories/{story_id}/claims:
     get:
       operationId: listClaimsForStory
+      summary: List claims associated with a story
       parameters:
         - in: path
           name: story_id
@@ -51,6 +62,12 @@ paths:
                     items: { $ref: "#/components/schemas/Claim" }
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service bearer token (internal mesh)
   schemas:
     ExtractClaimsRequest:
       type: object

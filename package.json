@@ -2,6 +2,7 @@
   "name": "the-actual-news",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "description": "Verifiable news ledger platform — news as a public service",
   "license": "AGPL-3.0-only",
   "scripts": {
@@ -23,7 +24,8 @@
     "launch:smoke": "node tools/public-web/launch-smoke.mjs",
     "public-env:template": "node tools/public-web/print-public-env-template.mjs",
     "public-source:check": "node tools/public-web/source-boundary-check.mjs",
-    "lint": "pnpm -r lint",
+    "lint": "eslint .",
+    "lint:contracts": "redocly lint",
     "smoke:public": "pnpm --filter public-web smoke",
     "conformance:doctor": "node tools/conformance/doctor.mjs",
     "conformance:test": "pnpm --filter conformance-harness test",
@@ -34,5 +36,15 @@
   "engines": {
     "node": ">=20",
     "pnpm": ">=9"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@redocly/cli": "^1.34.5",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.20.0"
   }
 }

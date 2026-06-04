@@ -3,11 +3,20 @@ info:
   title: Story Service
   version: "1.0.0"
 servers:
-  - url: ${STORY_BASE_URI}
+  - url: "{STORY_BASE_URI}"
+    description: Story service base URI (injected per environment)
+    variables:
+      STORY_BASE_URI:
+        default: http://localhost:8003
+        description: Base URI of the Story service deployment
+security:
+  - bearerAuth: []
 paths:
   /v1/health:
     get:
       operationId: storyHealth
+      summary: Liveness/readiness probe for the Story service
+      security: []
       responses:
         "200":
           description: ok
@@ -15,6 +24,7 @@ paths:
   /v1/stories:
     post:
       operationId: createStory
+      summary: Create a new story
       requestBody:
         required: true
         content:
@@ -35,6 +45,7 @@ paths:
 
     get:
       operationId: listStories
+      summary: List stories, optionally filtered by state
       parameters:
         - in: query
           name: state
@@ -58,6 +69,7 @@ paths:
   /v1/stories/{story_id}:
     get:
       operationId: getStory
+      summary: Get a story with its versions
       parameters:
         - in: path
           name: story_id
@@ -78,6 +90,7 @@ paths:
   /v1/stories/{story_id}/versions:
     post:
       operationId: createStoryVersion
+      summary: Create a new version of a story
       parameters:
         - in: path
           name: story_id
@@ -98,6 +111,7 @@ paths:
   /v1/stories/{story_id}/publish:
     post:
       operationId: publishStory
+      summary: Publish a specific version of a story
       parameters:
         - in: path
           name: story_id
@@ -120,6 +134,12 @@ paths:
                   publish_job_id: { $ref: "common.openapi.yaml#/components/schemas/Ulid" }
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service bearer token (internal mesh)
   schemas:
     Story:
       type: object
