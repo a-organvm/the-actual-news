@@ -3,16 +3,26 @@ info:
   title: Evidence Service
   version: "1.0.0"
 servers:
-  - url: ${EVIDENCE_BASE_URI}
+  - url: "{EVIDENCE_BASE_URI}"
+    description: Evidence service base URI (injected per environment)
+    variables:
+      EVIDENCE_BASE_URI:
+        default: http://localhost:8002
+        description: Base URI of the Evidence service deployment
+security:
+  - bearerAuth: []
 paths:
   /v1/health:
     get:
       operationId: evidenceHealth
+      summary: Liveness/readiness probe for the Evidence service
+      security: []
       responses: { "200": { description: ok } }
 
   /v1/evidence/presign:
     post:
       operationId: presignUpload
+      summary: Create a presigned URL for uploading an evidence blob
       requestBody:
         required: true
         content:
@@ -28,6 +38,7 @@ paths:
   /v1/evidence:
     post:
       operationId: registerEvidence
+      summary: Register an uploaded evidence blob with provenance
       requestBody:
         required: true
         content:
@@ -43,6 +54,7 @@ paths:
   /v1/evidence/{evidence_id_hash}:
     get:
       operationId: getEvidence
+      summary: Fetch an evidence object by its content hash
       parameters:
         - in: path
           name: evidence_id_hash
@@ -56,6 +68,12 @@ paths:
               schema: { $ref: "#/components/schemas/EvidenceObject" }
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service bearer token (internal mesh)
   schemas:
     PresignRequest:
       type: object

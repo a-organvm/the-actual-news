@@ -4,6 +4,7 @@ node_modules/
 
 # Build
 dist/
+*.tsbuildinfo
 .next/
 apps/public-web/.open-next/
 apps/public-web/.wrangler/

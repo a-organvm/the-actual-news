@@ -3,16 +3,25 @@ info:
   title: Gateway Public API
   version: "1.0.0"
 servers:
-  - url: ${PUBLIC_API_URI}
+  - url: "{PUBLIC_API_URI}"
+    description: Public gateway base URI (injected per environment)
+    variables:
+      PUBLIC_API_URI:
+        default: https://api.the-actual-news.example
+        description: Public base URI of the gateway deployment
+# Public read API — endpoints are unauthenticated by design.
+security: []
 paths:
   /v1/health:
     get:
       operationId: gatewayHealth
+      summary: Liveness/readiness probe for the public gateway
       responses: { "200": { description: ok } }
 
   /v1/feed:
     get:
       operationId: getFeed
+      summary: Get the public story feed for a geographic scope
       parameters:
         - in: query
           name: scope
@@ -40,6 +49,7 @@ paths:
   /v1/story/{story_id}:
     get:
       operationId: getStoryBundle
+      summary: Get the full reader bundle (story, claims, evidence, corrections)
       parameters:
         - in: path
           name: story_id
