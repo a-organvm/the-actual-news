@@ -48,3 +48,6 @@ apps/public-web/next-env.d.ts
 # Agent session artifacts
 .specstory/
 .gemini/
+
+# Claude background-session worktrees
+.claude/worktrees/
