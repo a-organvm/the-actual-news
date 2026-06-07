@@ -1,5 +1,23 @@
 BEGIN;
 
+CREATE TABLE actors (
+  actor_id TEXT PRIMARY KEY,
+  platform_id TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'member',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE coi_disclosures (
+  disclosure_id TEXT PRIMARY KEY,
+  platform_id TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  statement TEXT NOT NULL,
+  valid_from TIMESTAMPTZ NOT NULL,
+  valid_to TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE stories (
   story_id TEXT PRIMARY KEY,
   platform_id TEXT NOT NULL,
@@ -70,6 +88,26 @@ CREATE TABLE event_outbox (
   payload JSONB NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   published_at TIMESTAMPTZ
+);
+
+CREATE TABLE verification_tasks (
+  task_id TEXT PRIMARY KEY,
+  platform_id TEXT NOT NULL,
+  story_id TEXT NOT NULL,
+  claim_id TEXT NOT NULL,
+  task_type TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE reviews (
+  review_id TEXT PRIMARY KEY,
+  task_id TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  verdict TEXT NOT NULL,
+  notes TEXT,
+  evidence_edges JSONB NOT NULL DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 COMMIT;
