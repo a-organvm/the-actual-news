@@ -17,8 +17,9 @@ This file makes that continuity repo-local and remote-pushable without overwriti
 
 ## Verified State
 
-- Original repo cwd remains on `chore/issue-28-dependency-posture`, whose upstream branch is gone.
-- Original repo cwd remains dirty only with generated instruction shims: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`.
+- Original repo cwd started on `chore/issue-28-dependency-posture`, whose upstream branch is gone.
+- Original repo cwd started dirty only with generated instruction shims: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`.
+- That generated shim delta was preserved after this audit on remote branch `wip/preserve-2026-06-07-actual-news-generated-shims` at commit `2f09713`.
 - Clean launch worktree before this audit was `/Users/4jp/.local/share/codex/worktrees/full-suite-ship-the-actual-news`.
 - Clean launch worktree started at `9bc09a2`, aligned to `origin/main`.
 - Live Worker responded on 2026-06-07: `https://the-actual-news-public.ivixivi.workers.dev/api/healthz` returned `ok: true` with `platform_id: plf_cloudflare_public_01`.
@@ -34,6 +35,7 @@ This file makes that continuity repo-local and remote-pushable without overwriti
 | Canonical public domain not bound | `pnpm domain:doctor` fails DNS delegation for `theactual.news`; Cloudflare account has no matching zone. | Tracked as the canonical cutover blocker. |
 | Hosted provider URLs missing | `pnpm domain:doctor` fails briefing/newsletter, membership, and sponsor provider configuration. | Must be filled with hosted external URLs, not same-origin fallbacks. |
 | Repo-local receipt missing for 2026-06-06 closeout | Closeout was in `~/.codex/plans`, outside this repo. | This add-only audit file preserves the pointer in repo history. |
+| Generated shim delta local-only | `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` were dirty in the stale original cwd. | Preserved on `origin/wip/preserve-2026-06-07-actual-news-generated-shims`; not mixed into the clean launch PR. |
 | Seed and CLAUDE deployment descriptions stale | `seed.yaml` and `CLAUDE.md` still described Cloudflare Pages/static export as primary. | Updated in this branch to reflect Cloudflare Workers as the full public app path. |
 | IRF item not specific enough | `IRF-OPS-092` tracks satellite dirtiness, but not the canonical domain/provider cutover. | Added `IRF-III-059` in corpvs branch `codex/irf-actual-news-cutover-2026-06-07`. |
 
