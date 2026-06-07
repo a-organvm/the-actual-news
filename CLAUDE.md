@@ -1,10 +1,12 @@
 # CLAUDE.md — the-actual-news
 
+Face: internal
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What This Is
 
-**The Actual News** — verifiable news ledger platform treating news as a public service. A pnpm monorepo with an OpenAPI-defined gateway, microservices for claims/evidence/stories/verification, and a PostgreSQL-backed audit trail. Deployed as a Next.js static export on Cloudflare Pages.
+**The Actual News** — verifiable news ledger platform treating news as a public service. A pnpm monorepo with an OpenAPI-defined gateway, microservices for claims/evidence/stories/verification, a PostgreSQL-backed audit trail, and a public Next.js app deployed through OpenNext/Wrangler to Cloudflare Workers. Cloudflare Pages remains a static media-kit preview surface only.
 
 ## Commands
 
@@ -22,6 +24,14 @@ make migrate         # Run migrations via tools/migrate.sh
 make lint            # Lint OpenAPI contracts (npx @redocly/cli lint contracts/openapi/*.yaml)
 make test            # Run conformance tests (node tools/conformance/run.mjs)
 make reset           # down + up + migrate
+
+# Public launch / Cloudflare
+pnpm launch:local      # Full local no-Docker public launch gate
+pnpm launch:smoke      # Public route smoke set, including media-kit/provider surfaces
+pnpm cloudflare:build  # Build OpenNext Worker bundle
+pnpm cloudflare:deploy # Deploy the public Cloudflare Worker
+pnpm cloudflare:smoke  # Smoke the live Worker preview origin
+pnpm domain:doctor     # Read-only custom-domain/provider readiness audit
 
 # Individual service
 cd services/<name> && pnpm dev
@@ -51,13 +61,13 @@ tools/
 
 **Database**: PostgreSQL via Docker Compose locally. `POSTGRES_URI` env var required for migrations.
 
-**Frontend** (`apps/public-web`): Next.js 16 with static export (`output: 'export'`). Deployed to Cloudflare Pages.
+**Frontend** (`apps/public-web`): Next.js 16 public app built with OpenNext for Cloudflare Workers. Worker configuration lives at `apps/public-web/wrangler.jsonc`; browser-safe public variables only belong there.
 
 **Environment**: Set `PLATFORM_ID` and `POSTGRES_URI` before running make targets that need them.
 
 ## Deployment
 
-Live at **https://the-actual-news.pages.dev** (Cloudflare Pages). Next.js static export; React aligned to v19 for CF Pages compatibility.
+Full dynamic public app live at **https://the-actual-news-public.ivixivi.workers.dev** (Cloudflare Workers). Static media-kit preview remains at **https://the-actual-news.pages.dev/media-kit/**. Canonical custom domain and hosted provider URLs are still pending; verify with `pnpm domain:doctor` before claiming strict launch.
 
 <!-- ORGANVM:AUTO:START -->
 ## System Context (auto-generated — do not edit)
