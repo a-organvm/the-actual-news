@@ -227,7 +227,7 @@ After all three provider pages exist:
 
 ```bash
 PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 If the public app has not been deployed yet, run the no-Docker local gate:

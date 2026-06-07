@@ -1,4 +1,4 @@
-# The Actual News
+# Records Watch
 
 [![CI](https://github.com/organvm-iii-ergon/the-actual-news/actions/workflows/ci.yml/badge.svg)](https://github.com/organvm-iii-ergon/the-actual-news/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-pending-lightgrey)](https://github.com/organvm-iii-ergon/the-actual-news)
@@ -7,9 +7,9 @@
 [![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/organvm-iii-ergon/the-actual-news)
 [![TypeScript](https://img.shields.io/badge/lang-TypeScript-informational)](https://github.com/organvm-iii-ergon/the-actual-news)
 
-**Verifiable news ledger platform — news as a public service.**
+**Verifiable civic record platform — news as a public service.**
 
-The Actual News is a platform that rebuilds journalism as a public utility by making truthfulness and accountability the product and making attention economically irrelevant. Every published story ships with a machine-readable verification spine: atomic claims, content-addressed evidence graphs, and append-only correction history. Publication is gated by deterministic quality policies — not engagement metrics, not editorial discretion, not advertising revenue targets. If a story does not meet the evidence threshold defined in a versioned policy pack, it does not publish. Period.
+Records Watch is a platform that rebuilds journalism as a public utility by making truthfulness and accountability the product and making attention economically irrelevant. Every published story ships with a machine-readable verification spine: atomic claims, content-addressed evidence graphs, and append-only correction history. Publication is gated by deterministic quality policies — not engagement metrics, not editorial discretion, not advertising revenue targets. If a story does not meet the evidence threshold defined in a versioned policy pack, it does not publish. Period.
 
 This is not a news aggregator. It is not a fact-checking overlay. It is a full-stack platform that produces verifiable reporting artifacts — stories where every factual claim is traceable to primary evidence, where contradictions are structural objects rather than vibes, and where corrections are first-class immutable events with reason codes rather than quiet edits that vanish from the record.
 
@@ -41,7 +41,7 @@ This is not a news aggregator. It is not a fact-checking overlay. It is a full-s
 
 There was a time when news was the news. Before privatization and the attention economy, journalism operated as a public service without intentional bias — or at least, with structural incentives that did not actively reward bias. The advertising-funded, engagement-optimized model that replaced it has produced a media environment where outrage is more profitable than accuracy, where corrections are buried rather than celebrated, and where readers have no way to distinguish a well-sourced investigation from a thinly-sourced opinion piece dressed in the language of reporting.
 
-The Actual News starts from a different premise: **what if the platform itself made truthfulness the product?** Not as a layer on top of existing media (fact-checking is reactive and always too late), but as the native architecture of how stories are composed, verified, published, and corrected.
+Records Watch starts from a different premise: **what if the platform itself made truthfulness the product?** Not as a layer on top of existing media (fact-checking is reactive and always too late), but as the native architecture of how stories are composed, verified, published, and corrected.
 
 The core insight is that bias disputes become tractable when they are about specific, inspectable objects. Instead of arguing about whether a publication is "biased," readers, verifiers, and publishers all operate on the same structured objects: claims with time bounds and confidence scores, evidence with provenance chains, and edges that link one to the other with typed relations and strength values. Disagreement moves from the realm of vibes into the realm of data.
 
@@ -51,7 +51,7 @@ The economic model follows from the architecture: if the platform's value is the
 
 ## The Three-Layer Model
 
-Every story on The Actual News ships with three publicly accessible layers:
+Every story on Records Watch ships with three publicly accessible layers:
 
 ### Layer A: Narrative
 
@@ -130,7 +130,7 @@ pnpm launch:local
 After deployment, verify the live public origin with:
 
 ```bash
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 The public app can also be packaged separately from internal services when Docker is useful:
@@ -184,7 +184,7 @@ Generate the public-only launch env template with:
 pnpm public-env:template > .env.public
 pnpm launch:local
 pnpm launch:report
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 The `.github/workflows/public-launch.yml` workflow runs the required public launch gates and database-backed conformance checks on pull requests and pushes. It also has a non-blocking container build job for packaging validation.
@@ -560,7 +560,7 @@ Current status: **Phase 0** (Foundations) — contracts frozen, database schema 
 
 ## Cross-Organ Context
 
-The Actual News is part of **ORGAN-III (Ergon)** — the Commerce organ of the [organvm](https://github.com/organvm-iii-ergon) system. ORGAN-III houses products, platforms, and tools that generate value through direct utility.
+Records Watch is part of **ORGAN-III (Ergon)** — the Commerce organ of the [organvm](https://github.com/organvm-iii-ergon) system. ORGAN-III houses products, platforms, and tools that generate value through direct utility.
 
 ### Upstream Dependencies
 
@@ -568,11 +568,11 @@ The Actual News is part of **ORGAN-III (Ergon)** — the Commerce organ of the [
 
 ### Lateral Connections
 
-- **ORGAN-IV (Taxis)** — The orchestration organ governs cross-organ routing and governance. The Actual News's policy-as-code approach (versioned policy packs, deterministic gating) aligns with ORGAN-IV's governance model. The [`agentic-titan`](https://github.com/organvm-iv-taxis/agentic-titan) project explores similar patterns of structured decision-making under constraints.
+- **ORGAN-IV (Taxis)** — The orchestration organ governs cross-organ routing and governance. Records Watch's policy-as-code approach (versioned policy packs, deterministic gating) aligns with ORGAN-IV's governance model. The [`agentic-titan`](https://github.com/organvm-iv-taxis/agentic-titan) project explores similar patterns of structured decision-making under constraints.
 
 ### Downstream Surfaces
 
-- **ORGAN-V (Logos)** — Public process essays may reference The Actual News as a case study in building verification-first infrastructure.
+- **ORGAN-V (Logos)** — Public process essays may reference Records Watch as a case study in building verification-first infrastructure.
 - **ORGAN-VII (Kerygma)** — Distribution and announcement of platform milestones through the POSSE network.
 
 ---
@@ -617,7 +617,7 @@ The project follows the Core Protocol Spec's invariants as hard constraints. Con
 
 [AGPL-3.0](LICENSE) — Because the public record should remain public.
 
-The AGPL license ensures that any deployment of The Actual News must share its source code, including modifications. This is a deliberate choice: a platform whose value proposition is transparency and verifiability should itself be transparent and verifiable. Network use triggers the same obligations as distribution.
+The AGPL license ensures that any deployment of Records Watch must share its source code, including modifications. This is a deliberate choice: a platform whose value proposition is transparency and verifiability should itself be transparent and verifiable. Network use triggers the same obligations as distribution.
 
 ---
 

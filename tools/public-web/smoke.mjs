@@ -274,7 +274,7 @@ const checks = [
     contentType: "text/html",
     includes: [
       "Media Kit",
-      "The Actual News",
+      "Records Watch",
       "Read all about it, with receipts attached.",
       "Press copy",
       "Proof points",
@@ -470,17 +470,17 @@ const checks = [
   {
     path: "/site.webmanifest",
     contentType: "application/manifest+json",
-    includes: ['"name": "The Actual News"', '"display": "standalone"', '"/icon.svg"', '"share_target"', '"shortcuts"']
+    includes: ['"name": "Records Watch"', '"display": "standalone"', '"/icon.svg"', '"share_target"', '"shortcuts"']
   },
   {
     path: "/icon.svg",
     contentType: "image/svg+xml",
-    includes: ["<svg", "The Actual News", "Receipts"]
+    includes: ["<svg", "Records Watch", "Receipts"]
   },
   {
     path: "/api/social-card.svg?title=Smoke%20Test&kicker=Town%20square&state=review",
     contentType: "image/svg+xml",
-    includes: ["<svg", "Smoke", "The Actual News"]
+    includes: ["<svg", "Smoke", "Records Watch"]
   },
   {
     path: "/clip/smoke?title=Smoke%20Test&kicker=Town%20square&target=%2Fmembership",

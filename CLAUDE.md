@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-**The Actual News** — verifiable news ledger platform treating news as a public service. A pnpm monorepo with an OpenAPI-defined gateway, microservices for claims/evidence/stories/verification, a PostgreSQL-backed audit trail, and a public Next.js app deployed through OpenNext/Wrangler to Cloudflare Workers. Cloudflare Pages remains a static media-kit preview surface only.
+**Records Watch** — verifiable civic record platform treating news as a public service. A pnpm monorepo with an OpenAPI-defined gateway, microservices for claims/evidence/stories/verification, a PostgreSQL-backed audit trail, and a public Next.js app deployed through OpenNext/Wrangler to Cloudflare Workers. Cloudflare Pages remains a static media-kit preview surface only.
 
 ## Commands
 

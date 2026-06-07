@@ -1,4 +1,4 @@
-const siteUrl = process.env.PUBLIC_SITE_URL ?? "https://theactual.news";
+const siteUrl = process.env.PUBLIC_SITE_URL ?? "https://recordswatch.org";
 const publicApiUrl = process.env.PUBLIC_API_URL ?? siteUrl;
 const newsletterUrl = process.env.NEWSLETTER_URL ?? "";
 const membershipUrl = process.env.MEMBERSHIP_URL ?? "";
@@ -12,8 +12,8 @@ const lines = [
   "# Never put API keys, webhook secrets, CRM tokens, database URLs, or reviewer endpoints here.",
   "NEXT_PUBLIC_PLATFORM_ID=plf_public_01",
   `NEXT_PUBLIC_SITE_URL=${siteUrl}`,
-  "NEXT_PUBLIC_SITE_TITLE=The Actual News",
-  "NEXT_PUBLIC_SITE_DESCRIPTION=Verifiable reporting with public claim ledgers, evidence graphs, and correction history.",
+  "NEXT_PUBLIC_SITE_TITLE=Records Watch",
+  "NEXT_PUBLIC_SITE_DESCRIPTION=Verifiable civic record platform with public claim ledgers, evidence graphs, and correction history.",
   `NEXT_PUBLIC_PUBLIC_API_URI=${publicApiUrl}`,
   `NEXT_PUBLIC_ANALYTICS_DOMAIN=${analyticsDomain}`,
   "# Must stay aligned with Content-Security-Policy script-src.",

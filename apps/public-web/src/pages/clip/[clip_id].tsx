@@ -20,7 +20,7 @@ export default function ClipPage({ clipId, title, kicker, description, target, p
 
   return (
     <SiteShell
-      title={`${title} | The Actual News`}
+      title={`${title} | Records Watch`}
       description={description}
       path={`/clip/${clipId}`}
       imagePath={imagePath}
@@ -61,10 +61,10 @@ export default function ClipPage({ clipId, title, kicker, description, target, p
 export const getServerSideProps: GetServerSideProps<ClipPageProps> = async ({ params, query }) => {
   const clipId = String(params?.clip_id ?? "front-page");
   const item = publicFeedItemById(clipId);
-  const title = (item?.title ?? String(query.title ?? "The Actual News")).slice(0, 120);
+  const title = (item?.title ?? String(query.title ?? "Records Watch")).slice(0, 120);
   const kicker = (item?.kicker ?? String(query.kicker ?? "Town crier ledger")).slice(0, 80);
   const description = (
-    item?.summary ?? "A shareable newspaper clipping from The Actual News with receipts attached."
+    item?.summary ?? "A shareable newspaper clipping from Records Watch with receipts attached."
   ).slice(0, 180);
   const target = item?.storyPath ?? String(query.target ?? "/");
   const publishedAt = item?.publishedAt ?? "2026-06-02T12:00:00.000Z";
