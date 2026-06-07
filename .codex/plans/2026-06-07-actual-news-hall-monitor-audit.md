@@ -113,3 +113,12 @@ The parsed civic export contained:
 4. Worker custom domain is bound.
 5. Newsletter, membership, and sponsor provider URLs are hosted external destinations.
 6. Strict deployed launch gate passes on the chosen canonical domain.
+
+## Broader Corpvs Residue
+
+Late broader parity checks outside the Actual News lane found unrelated corpvs local-only committed branch tips and untracked prompt/session artifacts in the main corpvs checkout.
+
+- The committed branch tips were preserved by pushing their existing branch refs, plus a preservation ref for the local `main` tip.
+- After preservation, `git log --oneline --decorate --branches --not --remotes` returned empty in corpvs.
+- The main corpvs checkout still has 35 untracked prompt/session entries (`.claude/sessions/` and `data/prompt-registry/sessions/*`), about 19 MB total.
+- A bounded secret-pattern scan hit private/session and secret-adjacent prompt text. Those files were not committed or pushed blindly. Treat them as a separate privacy-sensitive SYS/prompt-accountability vacuum, not as Actual News work.
