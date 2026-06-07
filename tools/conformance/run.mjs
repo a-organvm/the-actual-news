@@ -29,6 +29,8 @@ const FIXTURE_FILES = [
   "CT-07.json"
 ];
 
+const BUNDLE_FIXTURE_DIR = path.join(ROOT, "fixtures", "civic-record-node");
+
 function schemaName() {
   const t = Date.now().toString(36);
   const r = Math.random().toString(36).slice(2, 10);
@@ -198,6 +200,142 @@ async function runFixture(pool, fixturePath) {
   }
 }
 
+async function runBundleReplayTest(pool) {
+  const fixtureId = "CT-BUNDLE-01";
+  const bundlePath = path.join(BUNDLE_FIXTURE_DIR, "civic-council-budget-amendment.json");
+
+  if (!fs.existsSync(bundlePath)) {
+    return { fixture_id: fixtureId, ok: false, error: "Bundle fixture not found" };
+  }
+
+  const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
+  const schema = schemaName();
+
+  const client = await pool.connect();
+  try {
+    await client.query(`CREATE SCHEMA ${schema};`);
+    await client.query(`SET search_path TO ${schema}, public;`);
+    await client.query(SCHEMA_SQL);
+
+    // Seed all bundle objects
+    if (bundle.actors) await insertRows(client, "actors", bundle.actors);
+    if (bundle.coi_disclosures) await insertRows(client, "coi_disclosures", bundle.coi_disclosures);
+
+    await insertRows(client, "stories", bundle.ledger.stories);
+    await insertRows(client, "story_versions", bundle.ledger.story_versions);
+    await insertRows(client, "evidence_objects", bundle.ledger.evidence_objects.map((e) => ({
+      ...e,
+      provenance: JSON.stringify(e.provenance)
+    })));
+    await insertRows(client, "claims", bundle.ledger.claims.map((c) => ({
+      ...c,
+      entities: JSON.stringify(c.entities ?? []),
+      time_window: JSON.stringify(c.time_window ?? {})
+    })));
+    await insertRows(client, "claim_evidence_edges", bundle.ledger.claim_evidence_edges);
+    if (bundle.ledger.corrections) {
+      await insertRows(client, "corrections", bundle.ledger.corrections.map((c) => ({
+        ...c,
+        details: JSON.stringify(c.details ?? {})
+      })));
+    }
+
+    // Validate invariants
+    // I8: Claims reference exactly one story version
+    const claimsQ = await client.query(`SELECT claim_id, story_version_id FROM claims`);
+    for (const claim of claimsQ.rows) {
+      const versionExists = await client.query(
+        `SELECT 1 FROM story_versions WHERE story_version_id = $1`,
+        [claim.story_version_id]
+      );
+      if (versionExists.rowCount === 0) {
+        throw new Error(`I8 violated: Claim ${claim.claim_id} references non-existent version ${claim.story_version_id}`);
+      }
+    }
+
+    // I9: Evidence edges reference existing objects
+    const edgesQ = await client.query(`SELECT edge_id, evidence_id_hash FROM claim_evidence_edges`);
+    for (const edge of edgesQ.rows) {
+      const evidenceExists = await client.query(
+        `SELECT 1 FROM evidence_objects WHERE evidence_id_hash = $1`,
+        [edge.evidence_id_hash]
+      );
+      if (evidenceExists.rowCount === 0) {
+        throw new Error(`I9 violated: Edge ${edge.edge_id} references non-existent evidence ${edge.evidence_id_hash}`);
+      }
+    }
+
+    // I10: Corrections reference existing claims
+    const correctionsQ = await client.query(`SELECT correction_id, claim_id FROM corrections`);
+    for (const corr of correctionsQ.rows) {
+      const claimExists = await client.query(
+        `SELECT 1 FROM claims WHERE claim_id = $1`,
+        [corr.claim_id]
+      );
+      if (claimExists.rowCount === 0) {
+        throw new Error(`I10 violated: Correction ${corr.correction_id} references non-existent claim ${corr.claim_id}`);
+      }
+    }
+
+    // Run gate and verify expected metrics
+    const story = bundle.ledger.stories[0];
+    const storyVersion = bundle.ledger.story_versions[0];
+    const P = bundle.policy_pack;
+
+    const gateArgs = [
+      bundle.platform_id,
+      story.story_id,
+      storyVersion.story_version_id,
+      P.evidence.primary_source_classes,
+      P.evidence.independence_key_fields,
+      P.claim.high_impact_claim_types,
+      P.claim.high_impact_regexes,
+      P.publish_gates.min_primary_evidence_ratio,
+      P.publish_gates.max_unsupported_claim_share,
+      P.publish_gates.max_contradicted_claims,
+      P.publish_gates.require_high_impact_corroboration,
+      P.publish_gates.high_impact_min_independent_sources
+    ];
+
+    const gateRes = await execInSchema(client, schema, { text: GATE_SQL, values: gateArgs });
+    if (gateRes.rowCount !== 1) throw new Error(`Gate query returned ${gateRes.rowCount} rows`);
+
+    const gateRow = gateRes.rows[0];
+    const expected = bundle.expected_gate;
+
+    assertEq("total_claims", Number(gateRow.total_claims), expected.total_claims);
+    assertEq("unsupported_claims", Number(gateRow.unsupported_claims), expected.unsupported_claims);
+    assertEq("contradicted_claims", Number(gateRow.contradicted_claims), expected.contradicted_claims);
+    assertEq("primary_supported_claims", Number(gateRow.primary_supported_claims), expected.primary_supported_claims);
+    assertEq("primary_evidence_ratio", Number(gateRow.primary_evidence_ratio), expected.primary_evidence_ratio);
+    assertEq("unsupported_claim_share", Number(gateRow.unsupported_claim_share), expected.unsupported_claim_share);
+    assertEq("high_impact_claims", Number(gateRow.high_impact_claims), expected.high_impact_claims);
+    assertEq("high_impact_corroborated", Number(gateRow.high_impact_corroborated), expected.high_impact_corroborated);
+    assertEq("corroboration_ok", Boolean(gateRow.corroboration_ok), expected.corroboration_ok);
+    assertEq("publish_gate_pass", Boolean(gateRow.publish_gate_pass), expected.publish_gate_pass);
+
+    // Test publish transaction
+    if (expected.publish_gate_pass) {
+      const publishArgs = [...gateArgs, P.policy_pack_version];
+      await client.query("BEGIN");
+      const pubRes = await execInSchema(client, schema, { text: PUBLISH_TXN_SQL, values: publishArgs });
+      await client.query("COMMIT");
+
+      const pubRow = pubRes.rows[0];
+      assertEq("publish.story_state", String(pubRow.story_state), "published");
+      assertEq("publish.outbox_count", Number(pubRow.outbox_count), 1);
+    }
+
+    await client.query(`DROP SCHEMA ${schema} CASCADE;`);
+    return { fixture_id: fixtureId, ok: true };
+  } catch (err) {
+    try { await client.query(`DROP SCHEMA ${schema} CASCADE;`); } catch {}
+    return { fixture_id: fixtureId, ok: false, error: String(err?.message ?? err) };
+  } finally {
+    client.release();
+  }
+}
+
 async function main() {
   const pool = new Pool({ connectionString: POSTGRES_URI });
 
@@ -211,6 +349,15 @@ async function main() {
     } else {
       console.log(`[OK] ${r.fixture_id}`);
     }
+  }
+
+  // Bundle replay conformance test (CT-BUNDLE-01)
+  const bundleReplayResult = await runBundleReplayTest(pool);
+  if (!bundleReplayResult.ok) {
+    failed += 1;
+    console.error(`[FAIL] ${bundleReplayResult.fixture_id}: ${bundleReplayResult.error}`);
+  } else {
+    console.log(`[OK] ${bundleReplayResult.fixture_id}`);
   }
 
   await pool.end();

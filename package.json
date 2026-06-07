@@ -9,7 +9,10 @@
     "dev": "pnpm -r --parallel dev",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "civic:bundle:seed": "node tools/civic-bundle/seed.mjs",
+    "civic:bundle:export": "node tools/civic-bundle/export.mjs",
+    "civic:bundle:replay": "node tools/civic-bundle/replay.mjs"
   },
   "engines": {
     "node": ">=20",
