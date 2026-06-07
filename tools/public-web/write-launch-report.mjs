@@ -236,7 +236,7 @@ ${publicRoutes.map((route) => `- \`${route}\``).join("\n")}
 - Partner-shareable static media-kit Pages preview: \`${cloudflarePagesPreviewUrl}/media-kit/\`
 - Worker smoke command: \`pnpm cloudflare:smoke\`
 - Worker build/deploy commands: \`pnpm cloudflare:build\`, \`pnpm cloudflare:preview\`, \`pnpm cloudflare:deploy\`
-- Final custom-domain gate remains: \`PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed\`
+- Final custom-domain gate remains: \`PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed\`
 
 ## Audience And Revenue
 
@@ -284,7 +284,7 @@ Internal-only values include:
 ## Required Commands
 
 \`\`\`bash
-PUBLIC_SITE_URL=https://theactual.news PUBLIC_API_URL=https://theactual.news ANALYTICS_DOMAIN=theactual.news pnpm public-env:template > .env.public
+PUBLIC_SITE_URL=https://recordswatch.org PUBLIC_API_URL=https://recordswatch.org ANALYTICS_DOMAIN=recordswatch.org pnpm public-env:template > .env.public
 pnpm launch:local
 PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
 pnpm cloudflare:build
@@ -292,7 +292,7 @@ pnpm cloudflare:preview
 PUBLIC_WEB_BASE_URL=http://127.0.0.1:8787 pnpm smoke:public
 pnpm cloudflare:deploy
 pnpm cloudflare:smoke
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 pnpm conformance:doctor
 bash tools/migrate.sh
 pnpm conformance:test

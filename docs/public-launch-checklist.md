@@ -1,6 +1,6 @@
 # Public Launch Checklist
 
-This checklist is the public-facing launch gate for The Actual News. It separates reader-visible configuration from internal credentials and keeps revenue/audience setup explicit.
+This checklist is the public-facing launch gate for Records Watch. It separates reader-visible configuration from internal credentials and keeps revenue/audience setup explicit.
 
 ## Launch Readiness Command
 
@@ -31,7 +31,7 @@ PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
 After deployment, prove the live public origin:
 
 ```bash
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 Before custom-domain cutover, prove DNS and Worker readiness:
@@ -59,12 +59,12 @@ pnpm public-env:template > .env.public
 Or prefill known public values without exposing secrets:
 
 ```bash
-PUBLIC_SITE_URL=https://theactual.news \
-PUBLIC_API_URL=https://api.theactual.news \
+PUBLIC_SITE_URL=https://recordswatch.org \
+PUBLIC_API_URL=https://api.recordswatch.org \
 NEWSLETTER_URL=https://newsletter-provider.example/form \
 MEMBERSHIP_URL=https://membership-provider.example/the-actual-news \
 SPONSOR_URL=https://crm-provider.example/sponsor-intake \
-ANALYTICS_DOMAIN=theactual.news \
+ANALYTICS_DOMAIN=recordswatch.org \
 pnpm public-env:template > .env.public
 ```
 
@@ -174,7 +174,7 @@ pnpm launch:smoke
 For a deployed origin:
 
 ```bash
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 `pnpm launch:deployed` wraps strict public env validation and the deployed route smoke test. It rejects local, placeholder, and non-HTTPS origins and requires `PUBLIC_WEB_BASE_URL` to match `NEXT_PUBLIC_SITE_URL`.

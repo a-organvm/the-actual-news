@@ -73,7 +73,7 @@ function runStep(label, command, args, env = process.env) {
 }
 
 if (!publicHttpsOrigin(baseUrl)) {
-  fail("Set PUBLIC_WEB_BASE_URL to the deployed public https origin, for example https://theactual.news.");
+  fail("Set PUBLIC_WEB_BASE_URL to the deployed public https origin, for example https://recordswatch.org.");
 }
 
 const envValues = parseEnv(envFile);

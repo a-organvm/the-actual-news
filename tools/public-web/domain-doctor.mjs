@@ -1,6 +1,6 @@
 import dns from "node:dns/promises";
 
-const domain = process.env.PUBLIC_DOMAIN ?? "theactual.news";
+const domain = process.env.PUBLIC_DOMAIN ?? "recordswatch.org";
 const workerUrl = process.env.PUBLIC_WORKER_URL ?? "https://the-actual-news-public.ivixivi.workers.dev";
 const expectedWorkerHost = new URL(workerUrl).hostname;
 

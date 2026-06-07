@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Evidence Service
+  title: Records Watch Evidence API
   version: "1.0.0"
 servers:
   - url: "{EVIDENCE_BASE_URI}"

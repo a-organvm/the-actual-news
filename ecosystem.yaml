@@ -1,13 +1,13 @@
 schema_version: '1.0'
 repo: the-actual-news
 organ: III
-display_name: "The Actual News — Verifiable news ledger platform, news as a public service"
+display_name: "Records Watch — Verifiable news ledger platform, news as a public service"
 
 delivery:
 - platform: web_app
   status: live
   priority: critical
-  notes: "Deployed at the-actual-news.pages.dev (Cloudflare Pages)"
+  notes: "Deployed at recordswatch.org (Cloudflare Workers)"
   next_action: "Add analytics tracking and performance monitoring"
 
 revenue:

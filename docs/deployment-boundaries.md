@@ -1,6 +1,6 @@
 # Public and Internal Deployment Boundaries
 
-The Actual News has two deployment surfaces:
+Records Watch has two deployment surfaces:
 
 1. **Public surface**: the reader-facing Next.js app and the reader-safe gateway endpoints it calls.
 2. **Internal surface**: the database, reviewer workspace, ingestion services, model gateway, blob storage, service credentials, and operational queues.
@@ -182,7 +182,7 @@ pnpm domain:doctor
 pnpm container:check
 pnpm launch:smoke
 PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 See `docs/public-launch-checklist.md` for the public launch gate.

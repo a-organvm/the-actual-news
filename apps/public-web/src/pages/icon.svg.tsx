@@ -6,7 +6,7 @@ function IconSvg() {
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="The Actual News">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Records Watch">
   <defs>
     <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse">
       <rect width="8" height="8" fill="#f7f7f2"/>

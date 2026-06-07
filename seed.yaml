@@ -15,7 +15,7 @@ metadata:
   deployment_url: "https://the-actual-news-public.ivixivi.workers.dev"
   deployment_platform: cloudflare-workers
   secondary_deployment_url: "https://the-actual-news.pages.dev/media-kit/"
-  deployment_note: "Full dynamic public app deploys via OpenNext/Wrangler to Cloudflare Workers; Cloudflare Pages remains a static media-kit preview."
+  deployment_note: "Full dynamic public app (Records Watch) deploys via OpenNext/Wrangler to Cloudflare Workers; Cloudflare Pages remains a static media-kit preview."
   last_validated: "2026-06-07"
   generated: "2026-02-17"
   sprint: "SENSORIA"

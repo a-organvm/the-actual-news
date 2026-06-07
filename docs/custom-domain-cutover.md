@@ -1,10 +1,10 @@
 # Custom Domain Cutover
 
-This is the public-safe path for moving The Actual News from the Workers preview origin to the canonical domain.
+This is the public-safe path for moving Records Watch from the Workers preview origin to the canonical domain.
 
 ## Current Evidence
 
-As of 2026-06-02, `theactual.news` is not delegated to Cloudflare. DNS currently publishes registrar-hosted nameservers and apex/www A records, so the Worker custom-domain cutover is not complete.
+As of 2026-06-07, `recordswatch.org` is not delegated to Cloudflare. DNS currently publishes registrar-hosted nameservers and apex/www A records, so the Worker custom-domain cutover is not complete.
 
 Verify at any time with:
 
@@ -14,7 +14,7 @@ pnpm domain:doctor
 
 The doctor is read-only. It checks:
 
-- `theactual.news` nameserver delegation
+- `recordswatch.org` nameserver delegation
 - apex and `www` DNS records
 - live Worker `/api/healthz`
 - whether newsletter, membership, and sponsor provider URLs are configured
@@ -25,12 +25,12 @@ The doctor is read-only. It checks:
 Generate `.env.public` with real provider URLs before strict launch:
 
 ```bash
-PUBLIC_SITE_URL=https://theactual.news \
-PUBLIC_API_URL=https://theactual.news \
+PUBLIC_SITE_URL=https://recordswatch.org \
+PUBLIC_API_URL=https://recordswatch.org \
 NEWSLETTER_URL=https://hosted-newsletter-provider.example/the-actual-news \
-MEMBERSHIP_URL=https://hosted-membership-provider.example/the-actual-news \
+MEMBERSHIP_URL=https://hosted-membership-provider.example/records-watch \
 SPONSOR_URL=https://hosted-sponsor-provider.example/the-actual-news \
-ANALYTICS_DOMAIN=theactual.news \
+ANALYTICS_DOMAIN=recordswatch.org \
 pnpm public-env:template > .env.public
 ```
 
@@ -38,7 +38,7 @@ Replace the example provider hosts with real hosted pages. Do not put payment ke
 
 ## DNS Cutover
 
-1. Add `theactual.news` to the Cloudflare account if it is not already there.
+1. Add `recordswatch.org` to the Cloudflare account if it is not already there.
 2. Change nameservers at the registrar to the Cloudflare nameservers for the zone.
 3. Wait until `pnpm domain:doctor` reports Cloudflare delegation.
 4. Keep the public Worker healthy at the preview origin while DNS propagates.
@@ -49,14 +49,14 @@ After DNS is delegated and `.env.public` is strict-ready:
 
 ```bash
 pnpm cloudflare:build
-pnpm --filter public-web exec wrangler deploy .open-next/worker.js --name the-actual-news-public --domain theactual.news
-pnpm --filter public-web exec wrangler deploy .open-next/worker.js --name the-actual-news-public --domain www.theactual.news
+pnpm --filter public-web exec wrangler deploy .open-next/worker.js --name the-actual-news-public --domain recordswatch.org
+pnpm --filter public-web exec wrangler deploy .open-next/worker.js --name the-actual-news-public --domain www.recordswatch.org
 ```
 
 Then prove the canonical origin:
 
 ```bash
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 ## What Remains Internal

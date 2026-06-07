@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
-  title: Gateway Public API
+  title: Records Watch Gateway API
   version: "1.0.0"
 servers:
   - url: "{PUBLIC_API_URI}"
     description: Public gateway base URI (injected per environment)
     variables:
       PUBLIC_API_URI:
-        default: https://api.the-actual-news.example
+        default: https://recordswatch.org
         description: Public base URI of the gateway deployment
 # Public read API — endpoints are unauthenticated by design.
 security: []

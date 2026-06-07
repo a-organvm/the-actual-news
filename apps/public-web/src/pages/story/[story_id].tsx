@@ -55,7 +55,7 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
 
   if (error) {
     return (
-      <SiteShell title="Story not found | The Actual News" path={story_id ? `/story/${story_id}` : "/story"}>
+      <SiteShell title="Story not found | Records Watch" path={story_id ? `/story/${story_id}` : "/story"}>
         <main className="content-page">
           <a className="back-link" href="/">Back to feed</a>
           <p className="error-state">Error: {error}</p>
@@ -66,7 +66,7 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
 
   if (!bundle) {
     return (
-      <SiteShell title="Loading story | The Actual News" path={story_id ? `/story/${story_id}` : "/story"}>
+      <SiteShell title="Loading story | Records Watch" path={story_id ? `/story/${story_id}` : "/story"}>
         <main className="content-page">
           <p className="empty-state">Loading story bundle...</p>
         </main>
@@ -104,7 +104,7 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
 
   return (
     <SiteShell
-      title={`${bundle.story.title} | The Actual News`}
+      title={`${bundle.story.title} | Records Watch`}
       description={description}
       path={`/story/${bundle.story.story_id}`}
       imagePath={imagePath}

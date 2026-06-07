@@ -14,10 +14,10 @@
   "vars": {
     "NEXT_PUBLIC_PLATFORM_ID": "plf_cloudflare_public_01",
     "NEXT_PUBLIC_SITE_URL": "https://the-actual-news-public.ivixivi.workers.dev",
-    "NEXT_PUBLIC_SITE_TITLE": "The Actual News",
-    "NEXT_PUBLIC_SITE_DESCRIPTION": "Verifiable reporting with public claim ledgers, evidence graphs, and correction history.",
+    "NEXT_PUBLIC_SITE_TITLE": "Records Watch",
+    "NEXT_PUBLIC_SITE_DESCRIPTION": "Verifiable news ledger providing public claim graphs, evidence audits, and correction history for civic records.",
     "NEXT_PUBLIC_PUBLIC_API_URI": "https://the-actual-news-public.ivixivi.workers.dev",
-    "NEXT_PUBLIC_ANALYTICS_DOMAIN": "theactual.news",
+    "NEXT_PUBLIC_ANALYTICS_DOMAIN": "recordswatch.org",
     "NEXT_PUBLIC_ANALYTICS_SCRIPT_URL": "https://plausible.io/js/script.js",
     "NEXT_PUBLIC_NEWSLETTER_URL": "",
     "NEXT_PUBLIC_MEMBERSHIP_URL": "",

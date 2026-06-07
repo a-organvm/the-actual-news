@@ -35,7 +35,7 @@ export function OfferPage({
 
   return (
     <SiteShell
-      title={`${title} | The Actual News`}
+      title={`${title} | Records Watch`}
       description={description}
       path={path}
       imagePath={imagePath}
@@ -51,7 +51,7 @@ export function OfferPage({
           <div className="newspaper__dateline">
             <span>Public notice</span>
             <span>{kicker}</span>
-            <span>The Actual News</span>
+            <span>Records Watch</span>
           </div>
           <div className="offer-page__hero">
             <p className="eyebrow">{kicker}</p>

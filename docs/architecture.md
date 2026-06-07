@@ -2,7 +2,7 @@
 
 ## Platform Design
 
-The Actual News platform rebuilds news as a public service by making truthfulness and accountability the product, and making attention economically irrelevant.
+Records Watch platform rebuilds news as a public service by making truthfulness and accountability the product, and making attention economically irrelevant.
 
 ### Core Idea: Publish Reports Plus a Verification Spine
 

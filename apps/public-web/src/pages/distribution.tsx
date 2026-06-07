@@ -11,11 +11,11 @@ import { publicOfferList } from "../lib/public-offers";
 export default function DistributionPage() {
   const title = "Distribution Kit";
   const description =
-    "Public launch copy, feeds, and share routes for spreading The Actual News without exposing internal systems or secrets.";
+    "Public launch copy, feeds, and share routes for spreading Records Watch without exposing internal systems or secrets.";
   const canonical = SITE_URL.replace(/\/$/, "");
 
   return (
-    <SiteShell title={`${title} | The Actual News`} description={description} path="/distribution">
+    <SiteShell title={`${title} | Records Watch`} description={description} path="/distribution">
       <main className="content-page content-page--wide">
         <article className="distribution-page">
           <div className="newspaper__dateline">

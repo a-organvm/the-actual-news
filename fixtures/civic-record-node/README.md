@@ -1,6 +1,6 @@
 # Civic Record Node - Canonical Bundle
 
-This directory contains the canonical civic story bundle for The Actual News platform. The bundle represents a complete, replayable civic record that demonstrates the full verification spine: narrative, claims, evidence, corrections, and governance.
+This directory contains the canonical civic story bundle for Records Watch platform. The bundle represents a complete, replayable civic record that demonstrates the full verification spine: narrative, claims, evidence, corrections, and governance.
 
 ## Scenario
 

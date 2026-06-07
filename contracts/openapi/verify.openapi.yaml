@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Verification Service
+  title: Records Watch Verification API
   version: "1.0.0"
 servers:
   - url: "{VERIFY_BASE_URI}"

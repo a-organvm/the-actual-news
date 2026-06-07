@@ -33,7 +33,7 @@ function wrapWords(value: string, maxChars: number) {
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const title = text(req.query.title, "The Actual News");
+  const title = text(req.query.title, "Records Watch");
   const kicker = text(req.query.kicker, "Town crier ledger");
   const state = text(req.query.state, "verified");
   const lines = wrapWords(title, 28);
@@ -62,8 +62,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   <rect width="1200" height="630" fill="url(#paper)"/>
   <rect x="44" y="42" width="1112" height="546" fill="none" stroke="#1f1f1f" stroke-width="5"/>
   <rect x="66" y="64" width="1068" height="502" fill="none" stroke="#1f1f1f" stroke-width="2"/>
-  <text x="92" y="126" class="small">${escapeXml(kicker)}</text>
-  <text x="600" y="126" text-anchor="middle" style="font: 900 58px Georgia, serif; text-transform: uppercase; fill: #111111;">The Actual News</text>
+  <text x="92" y="126" class="small">\${escapeXml(kicker)}</text>
+  <text x="600" y="126" text-anchor="middle" style="font: 900 58px Georgia, serif; text-transform: uppercase; fill: #111111;">Records Watch</text>
   <rect x="914" y="88" width="170" height="52" fill="#111111"/>
   <text x="999" y="124" text-anchor="middle" class="label">${escapeXml(state)}</text>
   <line x1="92" y1="166" x2="1108" y2="166" stroke="#1f1f1f" stroke-width="4"/>

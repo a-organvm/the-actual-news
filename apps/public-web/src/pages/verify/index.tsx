@@ -25,7 +25,7 @@ export default function VerifyQueuePage() {
 
   if (!ENABLE_VERIFIER_WORKSPACE) {
     return (
-      <SiteShell title="Verification Desk | The Actual News" path="/verify">
+      <SiteShell title="Verification Desk | Records Watch" path="/verify">
         <main className="content-page">
           <a className="back-link" href="/">Back to public site</a>
           <h1>Verification desk</h1>
@@ -46,7 +46,7 @@ export default function VerifyQueuePage() {
   }
 
   return (
-    <SiteShell title="Verification Queue | The Actual News" path="/verify">
+    <SiteShell title="Verification Queue | Records Watch" path="/verify">
       <main className="content-page">
         <h1>Verification queue</h1>
         <p className="lede">Open internal tasks awaiting review.</p>

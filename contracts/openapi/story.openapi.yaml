@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Story Service
+  title: Records Watch Story API
   version: "1.0.0"
 servers:
   - url: "{STORY_BASE_URI}"

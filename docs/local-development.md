@@ -1,4 +1,4 @@
-# Local Development Guide
+# Local Development Guide - Records Watch
 
 ## Prerequisites
 
@@ -165,7 +165,7 @@ Use `pnpm launch:local` for the required no-Docker launch path. It runs env chec
 After deploying the public app, run the deployed-origin gate. It requires a real HTTPS origin, verifies strict public env readiness, confirms `PUBLIC_WEB_BASE_URL` matches `NEXT_PUBLIC_SITE_URL`, and smoke tests the live routes:
 
 ```bash
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 The deployed gate expects hosted provider URLs to be configured. Its route smoke verifies `/go/*` redirects to those hosted destinations with UTM parameters instead of expecting pending fallback pages.

@@ -31,8 +31,8 @@ const publicArtifacts = [
 export default function PrinciplesPage() {
   return (
     <SiteShell
-      title="Public Principles | The Actual News"
-      description="The public editorial, funding, and internal-boundary principles behind The Actual News."
+      title="Public Principles | Records Watch"
+      description="The public editorial, funding, and internal-boundary principles behind Records Watch."
       path="/principles"
       imagePath="/api/social-card.svg?title=Public%20Principles&kicker=Town%20square%20desk"
     >
@@ -41,13 +41,13 @@ export default function PrinciplesPage() {
           <div className="newspaper__dateline">
             <span>Public notice</span>
             <span>Editorial firewall</span>
-            <span>The Actual News</span>
+            <span>Records Watch</span>
           </div>
           <section className="offer-page__hero">
             <p className="eyebrow">Public principles</p>
             <h1>Trust is the product</h1>
             <p className="lede">
-              The Actual News is built to grow without selling the story to advertisers, sponsors, or private
+              Records Watch is built to grow without selling the story to advertisers, sponsors, or private
               operational systems. The public surface is for readers; internal systems are for production work.
             </p>
             <div className="button-row">

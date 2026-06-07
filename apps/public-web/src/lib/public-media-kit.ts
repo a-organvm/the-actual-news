@@ -4,7 +4,7 @@ import { publicOffers } from "./public-offers";
 import { publicSponsorRegistry } from "./public-sponsors";
 
 export const mediaKitFacts = [
-  "The Actual News turns reporting into shareable public atoms: clipping pages, story bundles, claim summaries, evidence edges, feeds, and correction history.",
+  "Records Watch turns reporting into shareable public atoms: clipping pages, story bundles, claim summaries, evidence edges, feeds, and correction history.",
   "The public app separates audience and revenue capture from internal reviewer, database, payment, email, CRM, and webhook systems.",
   "Reader funding, membership, and sponsorship support reporting capacity without buying claims, ranking, correction decisions, or internal access."
 ];
@@ -12,12 +12,12 @@ export const mediaKitFacts = [
 export const pressCopy = [
   {
     label: "One sentence",
-    copy: "The Actual News is a newspaper-style public ledger where every story travels as shareable claim modules with receipts attached."
+    copy: "Records Watch is a newspaper-style public ledger where every story travels as shareable claim modules with receipts attached."
   },
   {
     label: "Short paragraph",
     copy:
-      "The Actual News packages reporting for the town square: a front page, atomic clips, story bundles, RSS and JSON feeds, campaign packets, sponsor disclosures, and public launch artifacts that keep evidence and corrections attached as stories move."
+      "Records Watch packages reporting for the town square: a front page, atomic clips, story bundles, RSS and JSON feeds, campaign packets, sponsor disclosures, and public launch artifacts that keep evidence and corrections attached as stories move."
   },
   {
     label: "Sponsor note",
@@ -31,7 +31,7 @@ export function publicMediaKit() {
     schema_version: "public-media-kit.v1",
     generated_at: new Date().toISOString(),
     positioning: {
-      name: "The Actual News",
+      name: "Records Watch",
       tagline: "Read all about it, with receipts attached.",
       category: "verifiable public-service news ledger",
       audience: ["readers", "members", "civic sponsors", "local accountability partners", "distribution operators"]

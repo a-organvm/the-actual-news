@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Claim Service
+  title: Records Watch Claim API
   version: "1.0.0"
 servers:
   - url: "{CLAIM_BASE_URI}"
