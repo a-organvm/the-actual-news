@@ -1,6 +1,6 @@
 # Project Constitution
 
-The Actual News platform operates under these 10 invariants, derived from the Core Protocol Spec v1.
+The Records Watch platform operates under these 10 invariants, derived from the Core Protocol Spec v1.
 
 ## Invariants
 
