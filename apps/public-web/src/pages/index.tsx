@@ -34,7 +34,7 @@ export default function FeedPage() {
     href: `/story/${item.story_id}`,
     state: item.state,
     updatedAt: item.updated_at,
-    shareText: `${item.title} - receipts included at The Actual News`
+    shareText: `${item.title} - receipts included at Records Watch`
   }));
 
   return (
@@ -49,7 +49,7 @@ export default function FeedPage() {
             </div>
             <div className="masthead">
               <p className="eyebrow">Town crier ledger</p>
-              <h1>The Actual News</h1>
+              <h1>Records Watch</h1>
               <p>Read all about it. Every headline breaks into claim-sized modules that carry evidence, correction history, and share links wherever the story travels.</p>
             </div>
             <div className="front-grid">

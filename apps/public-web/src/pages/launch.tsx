@@ -56,8 +56,8 @@ const launchArtifacts = [
 export default function LaunchPage() {
   return (
     <SiteShell
-      title="Launch Status | The Actual News"
-      description="Public-safe launch readiness for The Actual News audience, revenue, and internal boundary setup."
+      title="Launch Status | Records Watch"
+      description="Public-safe launch readiness for Records Watch audience, revenue, and internal boundary setup."
       path="/launch"
       imagePath="/api/social-card.svg?title=Launch%20Status&kicker=Public%20notice"
     >

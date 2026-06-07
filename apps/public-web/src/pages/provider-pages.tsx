@@ -10,7 +10,7 @@ export default function ProviderPages() {
 
   return (
     <SiteShell
-      title="Provider Pages | The Actual News"
+      title="Provider Pages | Records Watch"
       description="Public-safe setup packet for newsletter, membership, and sponsor provider pages."
       path="/provider-pages"
       imagePath="/api/social-card.svg?title=Provider%20Pages&kicker=Public%20notice"
