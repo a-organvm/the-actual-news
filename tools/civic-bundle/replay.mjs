@@ -67,10 +67,6 @@ function assertEq(label, got, exp) {
   if (got !== exp) throw new Error(`${label}: expected ${exp} got ${got}`);
 }
 
-function assertTrue(label, got) {
-  if (!got) throw new Error(`${label}: expected true got ${got}`);
-}
-
 function assertInvariant(name, condition, detail) {
   if (!condition) {
     throw new Error(`Invariant violated: ${name}${detail ? ` - ${detail}` : ""}`);
@@ -95,8 +91,6 @@ async function main() {
   const pool = new Pool({ connectionString: POSTGRES_URI });
   const client = await pool.connect();
   const schema = schemaName();
-  const failures = [];
-  const warnings = [];
 
   console.log(`\n=== Civic Bundle Replay ===`);
   console.log(`Bundle: ${bundle.bundle_id}`);

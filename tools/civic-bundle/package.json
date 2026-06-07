@@ -6,7 +6,8 @@
   "scripts": {
     "seed": "node seed.mjs",
     "export": "node export.mjs",
-    "replay": "node replay.mjs"
+    "replay": "node replay.mjs",
+    "verify": "node replay.mjs"
   },
   "dependencies": {
     "pg": "^8.19.0"

@@ -48,7 +48,7 @@ civic-seed:
 	node tools/civic-bundle/seed.mjs
 
 civic-export:
-	node tools/civic-bundle/export.mjs --story-id "$(CIVIC_STORY_ID)" --schema "$(CIVIC_BUNDLE_SCHEMA)"
+	@node tools/civic-bundle/export.mjs --story-id "$(CIVIC_STORY_ID)" --schema "$(CIVIC_BUNDLE_SCHEMA)"
 
 civic-replay:
 	node tools/civic-bundle/replay.mjs

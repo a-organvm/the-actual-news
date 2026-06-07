@@ -36,6 +36,8 @@ pnpm civic:bundle:export
 pnpm civic:bundle:replay
 ```
 
+`civic:bundle:verify` is an alias for `civic:bundle:replay`; both import the bundle into a temporary schema and validate the invariant set plus expected gate metrics.
+
 ## Schema
 
 The bundle manifest follows `bundle-manifest.schema.json`. All objects are scoped to `platform_id: plf_local_01`.

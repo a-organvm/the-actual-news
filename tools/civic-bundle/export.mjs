@@ -66,7 +66,7 @@ async function main() {
   const client = await pool.connect();
 
   try {
-    console.log(`Exporting story: ${storyId}`);
+    console.error(`Exporting story: ${storyId}`);
     await client.query(`SET search_path TO ${schema}, public;`);
 
     // Fetch story
@@ -211,17 +211,11 @@ async function main() {
     }
 
     // Compute expected gate metrics
-    const supportedClaims = claims.filter((c) => c.support_status === "supported");
     const unsupportedClaims = claims.filter((c) => c.support_status === "unsupported");
     const contradictedClaims = claims.filter((c) => c.support_status === "contradicted");
 
     // Count primary-supported claims
     const primarySourceClasses = new Set(["primary_record", "primary_media", "primary_dataset"]);
-    const supportedEvidenceHashes = new Set(
-      evidenceEdges
-        .filter((e) => e.relation === "supports")
-        .map((e) => e.evidence_id_hash)
-    );
     const primaryEvidenceObjects = evidenceObjects.filter(
       (e) => primarySourceClasses.has(e.provenance?.source_class)
     );
@@ -357,18 +351,18 @@ async function main() {
     if (outputPath) {
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       fs.writeFileSync(outputPath, JSON.stringify(bundle, null, 2) + "\n");
-      console.log(`✓ Bundle exported to: ${outputPath}`);
+      console.error(`✓ Bundle exported to: ${outputPath}`);
     } else {
       console.log(JSON.stringify(bundle, null, 2));
     }
 
-    console.log(`\nExport summary:`);
-    console.log(`  Stories: 1`);
-    console.log(`  Claims: ${claims.length}`);
-    console.log(`  Evidence: ${evidenceObjects.length}`);
-    console.log(`  Edges: ${evidenceEdges.length}`);
-    console.log(`  Corrections: ${corrections.length}`);
-    console.log(`  Gate pass: ${bundle.expected_gate.publish_gate_pass}`);
+    console.error(`\nExport summary:`);
+    console.error(`  Stories: 1`);
+    console.error(`  Claims: ${claims.length}`);
+    console.error(`  Evidence: ${evidenceObjects.length}`);
+    console.error(`  Edges: ${evidenceEdges.length}`);
+    console.error(`  Corrections: ${corrections.length}`);
+    console.error(`  Gate pass: ${bundle.expected_gate.publish_gate_pass}`);
 
   } catch (err) {
     console.error("Export failed:", err.message);
