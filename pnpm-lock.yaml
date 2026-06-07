@@ -186,6 +186,12 @@ importers:
         specifier: ^8.21.0
         version: 8.21.0
 
+  tools/civic-bundle:
+    dependencies:
+      pg:
+        specifier: ^8.19.0
+        version: 8.19.0
+
 packages:
 
   '@ast-grep/napi-darwin-arm64@0.40.5':

@@ -1,0 +1,399 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://the-actual-news.dev/schemas/civic-bundle-manifest-v1.json",
+  "title": "Civic Record Node Bundle Manifest",
+  "description": "Canonical schema for a replayable civic story bundle. Defines the complete set of objects required for a self-contained, verifiable news record.",
+  "type": "object",
+  "required": ["manifest_version", "bundle_id", "platform_id", "created_at", "policy_pack", "ledger", "expected_gate"],
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Schema version of this bundle manifest"
+    },
+    "bundle_id": {
+      "type": "string",
+      "description": "Unique identifier for this bundle (ULID format preferred)"
+    },
+    "platform_id": {
+      "type": "string",
+      "description": "Platform namespace this bundle belongs to"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this bundle was created"
+    },
+    "scenario": {
+      "type": "object",
+      "description": "Human-readable description of the civic scenario",
+      "required": ["title", "description", "civic_context"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Short title for the civic scenario"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of what this bundle represents"
+        },
+        "civic_context": {
+          "type": "string",
+          "description": "The civic institution or process this story documents"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Geographic or institutional jurisdiction"
+        }
+      }
+    },
+    "policy_pack": {
+      "$ref": "#/definitions/PolicyPack"
+    },
+    "ledger": {
+      "$ref": "#/definitions/Ledger"
+    },
+    "expected_gate": {
+      "$ref": "#/definitions/ExpectedGate"
+    },
+    "actors": {
+      "type": "array",
+      "description": "Platform participants involved in this bundle",
+      "items": {
+        "$ref": "#/definitions/Actor"
+      }
+    },
+    "coi_disclosures": {
+      "type": "array",
+      "description": "Conflict-of-interest declarations",
+      "items": {
+        "$ref": "#/definitions/COIDisclosure"
+      }
+    },
+    "verification_tasks": {
+      "type": "array",
+      "description": "Verification tasks created for this bundle",
+      "items": {
+        "$ref": "#/definitions/VerificationTask"
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "description": "Structured reviews/verdicts",
+      "items": {
+        "$ref": "#/definitions/Review"
+      }
+    },
+    "replay_invariants": {
+      "type": "array",
+      "description": "Invariants that must hold after replay",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "definitions": {
+    "PolicyPack": {
+      "type": "object",
+      "required": ["policy_pack_version", "publish_gates"],
+      "properties": {
+        "policy_pack_version": {
+          "type": "string",
+          "description": "Version of the policy pack"
+        },
+        "publish_gates": {
+          "type": "object",
+          "required": ["min_primary_evidence_ratio", "max_unsupported_claim_share", "max_contradicted_claims"],
+          "properties": {
+            "min_primary_evidence_ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Minimum ratio of primary-supported claims to total claims"
+            },
+            "max_unsupported_claim_share": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Maximum share of unsupported claims"
+            },
+            "max_contradicted_claims": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum number of contradicted claims allowed"
+            },
+            "require_high_impact_corroboration": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether high-impact claims require independent corroboration"
+            },
+            "high_impact_min_independent_sources": {
+              "type": "integer",
+              "minimum": 2,
+              "default": 2,
+              "description": "Minimum independent sources for high-impact claims"
+            }
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "primary_source_classes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Source classes considered primary evidence"
+            },
+            "independence_key_fields": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Fields used to compute independence keys"
+            }
+          }
+        },
+        "claim": {
+          "type": "object",
+          "properties": {
+            "high_impact_claim_types": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Claim types automatically flagged as high-impact"
+            },
+            "high_impact_regexes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Regex patterns for high-impact text detection"
+            }
+          }
+        }
+      }
+    },
+    "Ledger": {
+      "type": "object",
+      "required": ["stories", "story_versions", "claims", "evidence_objects", "claim_evidence_edges"],
+      "properties": {
+        "stories": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Story" }
+        },
+        "story_versions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/StoryVersion" }
+        },
+        "claims": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Claim" }
+        },
+        "evidence_objects": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/EvidenceObject" }
+        },
+        "claim_evidence_edges": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ClaimEvidenceEdge" }
+        },
+        "corrections": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Correction" }
+        },
+        "event_outbox": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/EventOutboxEntry" }
+        }
+      }
+    },
+    "Story": {
+      "type": "object",
+      "required": ["story_id", "platform_id", "title", "state"],
+      "properties": {
+        "story_id": { "type": "string" },
+        "platform_id": { "type": "string" },
+        "title": { "type": "string" },
+        "state": { "type": "string", "enum": ["draft", "review", "published"] },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "StoryVersion": {
+      "type": "object",
+      "required": ["story_version_id", "story_id", "body_markdown"],
+      "properties": {
+        "story_version_id": { "type": "string" },
+        "story_id": { "type": "string" },
+        "body_markdown": { "type": "string" },
+        "disclosure_markdown": { "type": ["string", "null"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Claim": {
+      "type": "object",
+      "required": ["claim_id", "story_id", "story_version_id", "claim_type", "text", "support_status"],
+      "properties": {
+        "claim_id": { "type": "string" },
+        "story_id": { "type": "string" },
+        "story_version_id": { "type": "string" },
+        "claim_type": { "type": "string", "enum": ["factual", "statistical", "attribution", "interpretation"] },
+        "text": { "type": "string" },
+        "entities": { "type": "array", "items": { "type": "string" } },
+        "time_window": { "type": "object" },
+        "jurisdiction": { "type": ["string", "null"] },
+        "support_status": { "type": "string", "enum": ["unsupported", "partially_supported", "supported", "contradicted"] },
+        "confidence_model": { "type": ["number", "null"] },
+        "confidence_review": { "type": ["number", "null"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "EvidenceObject": {
+      "type": "object",
+      "required": ["evidence_id_hash", "platform_id", "blob_uri", "media_type", "provenance"],
+      "properties": {
+        "evidence_id_hash": { "type": "string", "description": "Content-addressed hash (sha256:...)" },
+        "platform_id": { "type": "string" },
+        "blob_uri": { "type": "string" },
+        "media_type": { "type": "string" },
+        "extracted_text": { "type": ["string", "null"] },
+        "provenance": { "$ref": "#/definitions/Provenance" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Provenance": {
+      "type": "object",
+      "required": ["source_class"],
+      "properties": {
+        "source_class": {
+          "type": "string",
+          "enum": ["primary_record", "primary_media", "primary_dataset", "secondary", "commentary", "unknown"]
+        },
+        "source": { "type": "string" },
+        "publisher": { "type": "string" },
+        "url": { "type": "string" },
+        "collected_at": { "type": "string", "format": "date-time" },
+        "license": { "type": "string" },
+        "chain": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "evidence_id_hash": { "type": "string" },
+              "relationship": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "ClaimEvidenceEdge": {
+      "type": "object",
+      "required": ["edge_id", "claim_id", "evidence_id_hash", "relation", "strength"],
+      "properties": {
+        "edge_id": { "type": "string" },
+        "claim_id": { "type": "string" },
+        "evidence_id_hash": { "type": "string" },
+        "relation": { "type": "string", "enum": ["supports", "contradicts", "context"] },
+        "strength": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reviewer_actor_id": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Correction": {
+      "type": "object",
+      "required": ["correction_id", "platform_id", "claim_id", "reason"],
+      "properties": {
+        "correction_id": { "type": "string" },
+        "platform_id": { "type": "string" },
+        "claim_id": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "object" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "EventOutboxEntry": {
+      "type": "object",
+      "required": ["event_id", "platform_id", "event_type", "payload"],
+      "properties": {
+        "event_id": { "type": "string" },
+        "platform_id": { "type": "string" },
+        "event_type": { "type": "string" },
+        "event_version": { "type": "string", "default": "v1" },
+        "payload": { "type": "object" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Actor": {
+      "type": "object",
+      "required": ["actor_id", "platform_id", "display_name", "role"],
+      "properties": {
+        "actor_id": { "type": "string" },
+        "platform_id": { "type": "string" },
+        "display_name": { "type": "string" },
+        "role": { "type": "string", "enum": ["reporter", "editor", "verifier", "auditor", "admin", "member"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "COIDisclosure": {
+      "type": "object",
+      "required": ["disclosure_id", "platform_id", "actor_id", "statement", "valid_from"],
+      "properties": {
+        "disclosure_id": { "type": "string" },
+        "platform_id": { "type": "string" },
+        "actor_id": { "type": "string" },
+        "statement": { "type": "string" },
+        "valid_from": { "type": "string", "format": "date-time" },
+        "valid_to": { "type": ["string", "null"], "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "VerificationTask": {
+      "type": "object",
+      "required": ["task_id", "platform_id", "story_id", "claim_id", "task_type", "status"],
+      "properties": {
+        "task_id": { "type": "string" },
+        "platform_id": { "type": "string" },
+        "story_id": { "type": "string" },
+        "claim_id": { "type": "string" },
+        "task_type": { "type": "string", "enum": ["evidence_gap", "high_impact_corroboration", "contradiction_review", "coi_check"] },
+        "status": { "type": "string", "enum": ["open", "in_progress", "resolved", "dismissed"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Review": {
+      "type": "object",
+      "required": ["review_id", "task_id", "actor_id", "verdict"],
+      "properties": {
+        "review_id": { "type": "string" },
+        "task_id": { "type": "string" },
+        "actor_id": { "type": "string" },
+        "verdict": { "type": "string", "enum": ["confirmed", "disputed", "insufficient", "needs_context"] },
+        "notes": { "type": "string" },
+        "evidence_edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "evidence_id_hash": { "type": "string" },
+              "relation": { "type": "string" },
+              "strength": { "type": "number" }
+            }
+          }
+        },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ExpectedGate": {
+      "type": "object",
+      "description": "Expected publish gate evaluation result",
+      "required": ["total_claims", "unsupported_claims", "contradicted_claims", "primary_supported_claims", "primary_evidence_ratio", "unsupported_claim_share", "high_impact_claims", "high_impact_corroborated", "corroboration_ok", "publish_gate_pass"],
+      "properties": {
+        "total_claims": { "type": "integer", "minimum": 0 },
+        "unsupported_claims": { "type": "integer", "minimum": 0 },
+        "contradicted_claims": { "type": "integer", "minimum": 0 },
+        "primary_supported_claims": { "type": "integer", "minimum": 0 },
+        "primary_evidence_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "unsupported_claim_share": { "type": "number", "minimum": 0, "maximum": 1 },
+        "high_impact_claims": { "type": "integer", "minimum": 0 },
+        "high_impact_corroborated": { "type": "integer", "minimum": 0 },
+        "corroboration_ok": { "type": "boolean" },
+        "publish_gate_pass": { "type": "boolean" }
+      }
+    }
+  }
+}
