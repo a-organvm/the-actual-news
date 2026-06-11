@@ -1,11 +1,12 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { PublicSharePanel } from "../../components/PublicSharePanel";
-import { SiteShell } from "../../components/SiteShell";
-import { PUBLIC_API_URI } from "../../lib/env";
-import { absoluteUrl, publicFeedItemById, publicSharePacket, publicStoryBundle, socialCardPath, type PublicSharePacket } from "../../lib/public-feed";
-import { newsArticleJsonLd } from "../../lib/public-structured-data";
+import Link from "next/link";
+import { PublicSharePanel } from "../../../components/PublicSharePanel";
+import { SiteShell } from "../../../components/SiteShell";
+import { PUBLIC_API_URI } from "../../../lib/env";
+import { absoluteUrl, publicFeedItemById, publicSharePacket, publicStoryBundle, socialCardPath, type PublicSharePacket } from "../../../lib/public-feed";
+import { newsArticleJsonLd } from "../../../lib/public-structured-data";
 
 type StoryBundle = {
   story: {
@@ -173,6 +174,11 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
               </ul>
             </>
           )}
+          <div className="border-t border-gray-100 px-4 py-3 sm:px-6">
+            <Link href={`/story/${bundle.story.story_id}/simulation`} className="text-blue-600 hover:text-blue-800 font-medium">
+              View Simulated Public Square Discussion &rarr;
+            </Link>
+          </div>
         </section>
       </main>
     </SiteShell>

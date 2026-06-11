@@ -54,6 +54,17 @@ const pool = makePool(env.POSTGRES_URI);
 const app = express();
 app.use(express.json({ limit: "2mb" }));
 
+// Enable CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // GET /v1/health
 app.get("/v1/health", (_req, res) => {
   res.status(200).json({ ok: true, platform_id: env.PLATFORM_ID });
@@ -436,6 +447,65 @@ app.post("/v1/story/:story_id/publish", async (req, res) => {
     });
   } finally {
     client.release();
+  }
+});
+
+app.get("/v1/story/:story_id/simulation", async (req, res) => {
+  const story_id = req.params.story_id;
+
+  try {
+    // 1. Get threads
+    const threadsRes = await pool.query(`SELECT thread_id, status FROM sim_threads WHERE story_id = $1`, [story_id]);
+    const threads = threadsRes.rows;
+
+    if (threads.length === 0) {
+      return res.status(200).json({ items: [] });
+    }
+
+    const threadIds = threads.map(t => t.thread_id);
+
+    // 2. Get turns
+    const turnsRes = await pool.query(`
+      SELECT turn_id, thread_id, persona_id, parent_turn_id, content, created_at 
+      FROM sim_conversational_turns 
+      WHERE thread_id = ANY($1)
+      ORDER BY created_at ASC
+    `, [threadIds]);
+
+    const personaIds = [...new Set(turnsRes.rows.map(r => r.persona_id))];
+
+    // 3. Get personas
+    let personas = [];
+    if (personaIds.length > 0) {
+      const personasRes = await pool.query(`
+        SELECT persona_id, handle, traits 
+        FROM sim_personas 
+        WHERE persona_id = ANY($1)
+      `, [personaIds]);
+      personas = personasRes.rows;
+    }
+
+    // Form response
+    const result = threads.map(thread => {
+      const threadTurns = turnsRes.rows.filter(t => t.thread_id === thread.thread_id);
+      return {
+        thread_id: thread.thread_id,
+        status: thread.status,
+        turns: threadTurns.map(turn => ({
+          ...turn,
+          persona: personas.find(p => p.persona_id === turn.persona_id)
+        }))
+      };
+    });
+
+    return res.status(200).json({ items: result });
+  } catch (err: any) {
+    console.error("Simulation retrieval error", err);
+    return res.status(500).json({
+      code: "internal_error",
+      message: "unexpected server error fetching simulation",
+      details: { error: err.message }
+    });
   }
 });
 
