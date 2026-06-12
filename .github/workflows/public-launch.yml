@@ -71,12 +71,12 @@ jobs:
 
       - name: Check strict public launch template
         env:
-          PUBLIC_SITE_URL: https://theactual.news
-          PUBLIC_API_URL: https://api.theactual.news
-          NEWSLETTER_URL: https://briefing.theactual.news/join
-          MEMBERSHIP_URL: https://members.theactual.news/start
-          SPONSOR_URL: https://sponsor.theactual.news/intake
-          ANALYTICS_DOMAIN: theactual.news
+          PUBLIC_SITE_URL: https://recordswatch.org
+          PUBLIC_API_URL: https://api.recordswatch.org
+          NEWSLETTER_URL: https://briefing.recordswatch.org/join
+          MEMBERSHIP_URL: https://members.recordswatch.org/start
+          SPONSOR_URL: https://sponsor.recordswatch.org/intake
+          ANALYTICS_DOMAIN: recordswatch.org
         run: |
           pnpm public-env:template > .env.public
           PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict

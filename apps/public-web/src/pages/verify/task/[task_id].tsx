@@ -15,7 +15,7 @@ export default function TaskReviewPage() {
 
   if (!ENABLE_VERIFIER_WORKSPACE) {
     return (
-      <SiteShell title="Internal Reviewer Workspace | The Actual News" path={task_id ? `/verify/task/${task_id}` : "/verify"}>
+      <SiteShell title="Internal Reviewer Workspace | Records Watch" path={task_id ? `/verify/task/${task_id}` : "/verify"}>
         <main className="content-page">
           <a className="back-link" href="/verify">Back to verification desk</a>
           <h1>Internal reviewer workspace</h1>
@@ -56,7 +56,7 @@ export default function TaskReviewPage() {
   }
 
   return (
-    <SiteShell title="Review Task | The Actual News" path={task_id ? `/verify/task/${task_id}` : "/verify"}>
+    <SiteShell title="Review Task | Records Watch" path={task_id ? `/verify/task/${task_id}` : "/verify"}>
       <main className="content-page">
         <a className="back-link" href="/verify">Back to queue</a>
         <h1>Review task</h1>

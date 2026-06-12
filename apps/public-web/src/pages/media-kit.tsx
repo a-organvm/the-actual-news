@@ -10,8 +10,8 @@ export default function MediaKitPage() {
 
   return (
     <SiteShell
-      title="Media Kit | The Actual News"
-      description="Public positioning, proof points, press copy, and sponsor-safe boundary notes for The Actual News."
+      title="Media Kit | Records Watch"
+      description="Public positioning, proof points, press copy, and sponsor-safe boundary notes for Records Watch."
       path="/media-kit"
       imagePath="/api/social-card.svg?title=Media%20Kit&kicker=Public%20notice"
     >

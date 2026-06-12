@@ -1,11 +1,12 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { PublicSharePanel } from "../../components/PublicSharePanel";
-import { SiteShell } from "../../components/SiteShell";
-import { PUBLIC_API_URI } from "../../lib/env";
-import { absoluteUrl, publicFeedItemById, publicSharePacket, publicStoryBundle, socialCardPath, type PublicSharePacket } from "../../lib/public-feed";
-import { newsArticleJsonLd } from "../../lib/public-structured-data";
+import Link from "next/link";
+import { PublicSharePanel } from "../../../components/PublicSharePanel";
+import { SiteShell } from "../../../components/SiteShell";
+import { PUBLIC_API_URI } from "../../../lib/env";
+import { absoluteUrl, publicFeedItemById, publicSharePacket, publicStoryBundle, socialCardPath, type PublicSharePacket } from "../../../lib/public-feed";
+import { newsArticleJsonLd } from "../../../lib/public-structured-data";
 
 type StoryBundle = {
   story: {
@@ -55,7 +56,7 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
 
   if (error) {
     return (
-      <SiteShell title="Story not found | The Actual News" path={story_id ? `/story/${story_id}` : "/story"}>
+      <SiteShell title="Story not found | Records Watch" path={story_id ? `/story/${story_id}` : "/story"}>
         <main className="content-page">
           <a className="back-link" href="/">Back to feed</a>
           <p className="error-state">Error: {error}</p>
@@ -66,7 +67,7 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
 
   if (!bundle) {
     return (
-      <SiteShell title="Loading story | The Actual News" path={story_id ? `/story/${story_id}` : "/story"}>
+      <SiteShell title="Loading story | Records Watch" path={story_id ? `/story/${story_id}` : "/story"}>
         <main className="content-page">
           <p className="empty-state">Loading story bundle...</p>
         </main>
@@ -104,7 +105,7 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
 
   return (
     <SiteShell
-      title={`${bundle.story.title} | The Actual News`}
+      title={`${bundle.story.title} | Records Watch`}
       description={description}
       path={`/story/${bundle.story.story_id}`}
       imagePath={imagePath}
@@ -173,6 +174,11 @@ export default function StoryPage({ initialBundle, initialSharePacket }: StoryPa
               </ul>
             </>
           )}
+          <div className="border-t border-gray-100 px-4 py-3 sm:px-6">
+            <Link href={`/story/${bundle.story.story_id}/simulation`} className="text-blue-600 hover:text-blue-800 font-medium">
+              View Simulated Public Square Discussion &rarr;
+            </Link>
+          </div>
         </section>
       </main>
     </SiteShell>

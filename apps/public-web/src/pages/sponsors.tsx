@@ -18,8 +18,8 @@ export default function SponsorsPage() {
 
   return (
     <SiteShell
-      title="Sponsor Registry | The Actual News"
-      description="Public sponsor disclosures, firewall rules, and sponsorship lanes for The Actual News."
+      title="Sponsor Registry | Records Watch"
+      description="Public sponsor disclosures, firewall rules, and sponsorship lanes for Records Watch."
       path="/sponsors"
       imagePath="/api/social-card.svg?title=Sponsor%20Registry&kicker=Public%20notice"
     >

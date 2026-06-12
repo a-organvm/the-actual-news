@@ -43,7 +43,7 @@ export function SiteShell({
         <div className="site-header__inner">
           <Link className="brand-link" href="/">
             <span className="brand-mark">Hear ye</span>
-            <span>The Actual News</span>
+            <span>Records Watch</span>
           </Link>
           <nav className="nav-links" aria-label="Primary navigation">
             <Link href="/#feed">Feed</Link>
@@ -63,7 +63,7 @@ export function SiteShell({
       {children}
       <footer className="site-footer">
         <div className="page-section">
-          <strong>The Actual News</strong>
+          <strong>Records Watch</strong>
           <p>Verifiable reporting funded by readers, members, and civic partners.</p>
           <nav className="footer-links" aria-label="Distribution feeds">
             <Link href="/feed.xml">RSS</Link>

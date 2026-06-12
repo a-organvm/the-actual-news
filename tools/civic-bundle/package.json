@@ -1,0 +1,15 @@
+{
+  "name": "civic-bundle-tools",
+  "version": "0.1.0",
+  "description": "Tools for managing canonical civic story bundles",
+  "type": "module",
+  "scripts": {
+    "seed": "node seed.mjs",
+    "export": "node export.mjs",
+    "replay": "node replay.mjs",
+    "verify": "node replay.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.19.0"
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "manifest_version": "1.0.0",
+  "bundle_id": "01JCYCIVIC000000000000001",
+  "platform_id": "plf_local_01",
+  "created_at": "2026-06-02T12:00:00Z",
+  "scenario": {
+    "title": "City Council Budget Amendment for Riverside Park",
+    "description": "A city council meeting where a $2.3M budget amendment was approved for Riverside Park renovation. The story documents the vote, the funding sources, and a correction to the initial claim about the total project cost.",
+    "civic_context": "Municipal government budget process",
+    "jurisdiction": "riverside_city"
+  },
+  "policy_pack": {
+    "policy_pack_version": "v1.0.0",
+    "publish_gates": {
+      "min_primary_evidence_ratio": 0.50,
+      "max_unsupported_claim_share": 0.10,
+      "max_contradicted_claims": 0,
+      "require_high_impact_corroboration": true,
+      "high_impact_min_independent_sources": 2
+    },
+    "evidence": {
+      "primary_source_classes": ["primary_record", "primary_media", "primary_dataset"],
+      "independence_key_fields": ["source", "publisher", "url", "blob_uri"]
+    },
+    "claim": {
+      "high_impact_claim_types": ["statistical"],
+      "high_impact_regexes": [
+        "(accus|illegal|fraud|crime|charged|indict|lawsuit|killed|injur|shoot|arrest|explos|terror|abuse)"
+      ]
+    }
+  },
+  "actors": [
+    {
+      "actor_id": "01JCYACTOR00000000000001",
+      "platform_id": "plf_local_01",
+      "display_name": "Maria Santos",
+      "role": "reporter",
+      "created_at": "2026-06-01T10:00:00Z"
+    },
+    {
+      "actor_id": "01JCYACTOR00000000000002",
+      "platform_id": "plf_local_01",
+      "display_name": "James Chen",
+      "role": "verifier",
+      "created_at": "2026-06-01T10:00:00Z"
+    },
+    {
+      "actor_id": "01JCYACTOR00000000000003",
+      "platform_id": "plf_local_01",
+      "display_name": "Patricia Williams",
+      "role": "editor",
+      "created_at": "2026-06-01T10:00:00Z"
+    }
+  ],
+  "coi_disclosures": [
+    {
+      "disclosure_id": "01JCYCOI00000000000001",
+      "platform_id": "plf_local_01",
+      "actor_id": "01JCYACTOR00000000000001",
+      "statement": "Reporter's spouse works for the parks department, which is the subject of this story.",
+      "valid_from": "2026-06-01T00:00:00Z",
+      "valid_to": null,
+      "created_at": "2026-06-01T10:00:00Z"
+    }
+  ],
+  "ledger": {
+    "stories": [
+      {
+        "story_id": "01JCYSTORY00000000000001",
+        "platform_id": "plf_local_01",
+        "title": "City Council Approves $2.3M Budget Amendment for Riverside Park Renovation",
+        "state": "review",
+        "created_at": "2026-06-01T14:00:00Z",
+        "updated_at": "2026-06-02T10:00:00Z"
+      }
+    ],
+    "story_versions": [
+      {
+        "story_version_id": "01JCYVER000000000000001",
+        "story_id": "01JCYSTORY00000000000001",
+        "body_markdown": "# City Council Approves Budget Amendment for Riverside Park\n\nThe Riverside City Council voted 7-2 on Tuesday to approve a $2.3 million budget amendment for the renovation of Riverside Park. The amendment allocates funds for new playground equipment, walking trails, and stormwater management improvements.\n\nThe funding comes from a combination of federal infrastructure grants ($1.5M) and the city's capital improvement fund ($800K). Construction is expected to begin in spring 2027.\n\nCouncil members Maria Rodriguez and David Kim cast the dissenting votes, citing concerns about the timeline and the impact on other capital projects.\n\nThe total project cost was initially reported as $3.1 million, but the final approved amount was $2.3 million after value engineering reduced the scope.",
+        "disclosure_markdown": "Reporter's spouse works for the parks department.",
+        "created_at": "2026-06-01T14:00:00Z"
+      }
+    ],
+    "claims": [
+      {
+        "claim_id": "01JCYCLM00000000000001",
+        "story_id": "01JCYSTORY00000000000001",
+        "story_version_id": "01JCYVER000000000000001",
+        "claim_type": "factual",
+        "text": "The Riverside City Council voted 7-2 on Tuesday to approve a budget amendment.",
+        "entities": ["Riverside City Council"],
+        "time_window": {"date": "2026-05-27"},
+        "jurisdiction": "riverside_city",
+        "support_status": "supported",
+        "confidence_model": 0.95,
+        "confidence_review": 1.0,
+        "created_at": "2026-06-01T15:00:00Z"
+      },
+      {
+        "claim_id": "01JCYCLM00000000000002",
+        "story_id": "01JCYSTORY00000000000001",
+        "story_version_id": "01JCYVER000000000000001",
+        "claim_type": "statistical",
+        "text": "The budget amendment is for $2.3 million.",
+        "entities": [],
+        "time_window": {},
+        "jurisdiction": "riverside_city",
+        "support_status": "supported",
+        "confidence_model": 0.9,
+        "confidence_review": 1.0,
+        "created_at": "2026-06-01T15:00:00Z"
+      },
+      {
+        "claim_id": "01JCYCLM00000000000003",
+        "story_id": "01JCYSTORY00000000000001",
+        "story_version_id": "01JCYVER000000000000001",
+        "claim_type": "factual",
+        "text": "Funding comes from $1.5M in federal infrastructure grants and $800K from the city's capital improvement fund.",
+        "entities": ["federal government", "city capital improvement fund"],
+        "time_window": {},
+        "jurisdiction": "riverside_city",
+        "support_status": "supported",
+        "confidence_model": 0.85,
+        "confidence_review": 0.9,
+        "created_at": "2026-06-01T15:00:00Z"
+      },
+      {
+        "claim_id": "01JCYCLM00000000000004",
+        "story_id": "01JCYSTORY00000000000001",
+        "story_version_id": "01JCYVER000000000000001",
+        "claim_type": "attribution",
+        "text": "Council members Maria Rodriguez and David Kim cast the dissenting votes.",
+        "entities": ["Maria Rodriguez", "David Kim"],
+        "time_window": {"date": "2026-05-27"},
+        "jurisdiction": "riverside_city",
+        "support_status": "supported",
+        "confidence_model": 0.9,
+        "confidence_review": 1.0,
+        "created_at": "2026-06-01T15:00:00Z"
+      },
+      {
+        "claim_id": "01JCYCLM00000000000005",
+        "story_id": "01JCYSTORY00000000000001",
+        "story_version_id": "01JCYVER000000000000001",
+        "claim_type": "factual",
+        "text": "The total project cost was initially reported as $3.1 million.",
+        "entities": [],
+        "time_window": {},
+        "jurisdiction": "riverside_city",
+        "support_status": "supported",
+        "confidence_model": 0.8,
+        "confidence_review": 0.9,
+        "created_at": "2026-06-01T15:00:00Z"
+      },
+      {
+        "claim_id": "01JCYCLM00000000000006",
+        "story_id": "01JCYSTORY00000000000001",
+        "story_version_id": "01JCYVER000000000000001",
+        "claim_type": "factual",
+        "text": "Construction is expected to begin in spring 2027.",
+        "entities": [],
+        "time_window": {"start": "2027-03-01", "end": "2027-05-31"},
+        "jurisdiction": "riverside_city",
+        "support_status": "partially_supported",
+        "confidence_model": 0.7,
+        "confidence_review": 0.6,
+        "created_at": "2026-06-01T15:00:00Z"
+      }
+    ],
+    "evidence_objects": [
+      {
+        "evidence_id_hash": "sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+        "platform_id": "plf_local_01",
+        "blob_uri": "s3://evidence/civic-council/minutes-2026-05-27.pdf",
+        "media_type": "application/pdf",
+        "extracted_text": "City Council Meeting Minutes - May 27, 2026. Item 7B: Budget Amendment for Riverside Park. Motion by Councilmember Chen, seconded by Councilmember Patel. Vote: 7 in favor, 2 opposed (Rodriguez, Kim). Amendment approved.",
+        "provenance": {
+          "source_class": "primary_record",
+          "source": "city_clerk",
+          "publisher": "City of Riverside",
+          "url": "https://riverside.gov/council/minutes/2026-05-27",
+          "collected_at": "2026-05-28T09:00:00Z",
+          "license": "public_record",
+          "chain": []
+        },
+        "created_at": "2026-05-28T10:00:00Z"
+      },
+      {
+        "evidence_id_hash": "sha256:b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+        "platform_id": "plf_local_01",
+        "blob_uri": "s3://evidence/civic-council/budget-amendment-doc.pdf",
+        "media_type": "application/pdf",
+        "extracted_text": "Budget Amendment Resolution 2026-47. Total amount: $2,300,000. Federal infrastructure grant: $1,500,000. City capital improvement fund: $800,000.",
+        "provenance": {
+          "source_class": "primary_record",
+          "source": "finance_department",
+          "publisher": "City of Riverside",
+          "url": "https://riverside.gov/finance/amendment-2026-47",
+          "collected_at": "2026-05-28T09:00:00Z",
+          "license": "public_record",
+          "chain": []
+        },
+        "created_at": "2026-05-28T10:00:00Z"
+      },
+      {
+        "evidence_id_hash": "sha256:c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+        "platform_id": "plf_local_01",
+        "blob_uri": "s3://evidence/civic-council/council-vote-record.csv",
+        "media_type": "text/csv",
+        "extracted_text": null,
+        "provenance": {
+          "source_class": "primary_dataset",
+          "source": "clerk_api",
+          "publisher": "City of Riverside",
+          "url": "https://riverside.gov/council/votes/api",
+          "collected_at": "2026-05-27T20:00:00Z",
+          "license": "public_record",
+          "chain": []
+        },
+        "created_at": "2026-05-28T10:00:00Z"
+      },
+      {
+        "evidence_id_hash": "sha256:d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5",
+        "platform_id": "plf_local_01",
+        "blob_uri": "s3://evidence/civic-council/news-coverage-local.pdf",
+        "media_type": "application/pdf",
+        "extracted_text": "Riverside Times coverage of council vote. Quotes Rodriguez: 'We need to prioritize the water treatment upgrade first.'",
+        "provenance": {
+          "source_class": "secondary",
+          "source": "local_newspaper",
+          "publisher": "Riverside Times",
+          "url": "https://riversidetimes.com/news/council-vote-park",
+          "collected_at": "2026-05-28T12:00:00Z",
+          "license": "all_rights_reserved",
+          "chain": []
+        },
+        "created_at": "2026-05-28T13:00:00Z"
+      }
+    ],
+    "claim_evidence_edges": [
+      {
+        "edge_id": "01JCYEDGE000000000001",
+        "claim_id": "01JCYCLM00000000000001",
+        "evidence_id_hash": "sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+        "relation": "supports",
+        "strength": 1.0,
+        "reviewer_actor_id": "01JCYACTOR00000000000002",
+        "notes": "Council minutes confirm 7-2 vote on May 27.",
+        "created_at": "2026-06-01T16:00:00Z"
+      },
+      {
+        "edge_id": "01JCYEDGE000000000002",
+        "claim_id": "01JCYCLM00000000000002",
+        "evidence_id_hash": "sha256:c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+        "relation": "supports",
+        "strength": 0.95,
+        "reviewer_actor_id": "01JCYACTOR00000000000002",
+        "notes": "Council vote record packet includes the approved $2.3M amendment amount.",
+        "created_at": "2026-06-01T16:00:00Z"
+      },
+      {
+        "edge_id": "01JCYEDGE000000000003",
+        "claim_id": "01JCYCLM00000000000002",
+        "evidence_id_hash": "sha256:b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+        "relation": "supports",
+        "strength": 1.0,
+        "reviewer_actor_id": "01JCYACTOR00000000000002",
+        "notes": "Budget amendment document specifies $2.3M.",
+        "created_at": "2026-06-01T16:00:00Z"
+      },
+      {
+        "edge_id": "01JCYEDGE000000000004",
+        "claim_id": "01JCYCLM00000000000003",
+        "evidence_id_hash": "sha256:b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+        "relation": "supports",
+        "strength": 0.9,
+        "reviewer_actor_id": "01JCYACTOR00000000000002",
+        "notes": "Budget document shows funding breakdown.",
+        "created_at": "2026-06-01T16:00:00Z"
+      },
+      {
+        "edge_id": "01JCYEDGE000000000005",
+        "claim_id": "01JCYCLM00000000000004",
+        "evidence_id_hash": "sha256:c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+        "relation": "supports",
+        "strength": 0.95,
+        "reviewer_actor_id": "01JCYACTOR00000000000002",
+        "notes": "Vote record confirms Rodriguez and Kim as dissenting.",
+        "created_at": "2026-06-01T16:00:00Z"
+      },
+      {
+        "edge_id": "01JCYEDGE000000000006",
+        "claim_id": "01JCYCLM00000000000005",
+        "evidence_id_hash": "sha256:d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5",
+        "relation": "supports",
+        "strength": 0.7,
+        "reviewer_actor_id": "01JCYACTOR00000000000002",
+        "notes": "Local news coverage mentions initial $3.1M figure.",
+        "created_at": "2026-06-01T16:00:00Z"
+      },
+      {
+        "edge_id": "01JCYEDGE000000000007",
+        "claim_id": "01JCYCLM00000000000006",
+        "evidence_id_hash": "sha256:b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+        "relation": "supports",
+        "strength": 0.65,
+        "reviewer_actor_id": null,
+        "notes": "Budget document supports the spring 2027 project timeline, with follow-up needed for final start notice.",
+        "created_at": "2026-06-01T16:00:00Z"
+      }
+    ],
+    "corrections": [
+      {
+        "correction_id": "01JCYCORR00000000001",
+        "platform_id": "plf_local_01",
+        "claim_id": "01JCYCLM00000000000002",
+        "reason": "Initial reporting stated $3.1M; final approved amount was $2.3M after value engineering.",
+        "details": {
+          "original_amount": 3100000,
+          "corrected_amount": 2300000,
+          "reason_code": "numerical_correction"
+        },
+        "created_at": "2026-06-02T09:00:00Z"
+      }
+    ],
+    "event_outbox": []
+  },
+  "verification_tasks": [
+    {
+      "task_id": "01JCYTASK00000000001",
+      "platform_id": "plf_local_01",
+      "story_id": "01JCYSTORY00000000000001",
+      "claim_id": "01JCYCLM00000000000006",
+      "task_type": "evidence_gap",
+      "status": "open",
+      "created_at": "2026-06-01T17:00:00Z"
+    },
+    {
+      "task_id": "01JCYTASK00000000002",
+      "platform_id": "plf_local_01",
+      "story_id": "01JCYSTORY00000000000001",
+      "claim_id": "01JCYCLM00000000000002",
+      "task_type": "high_impact_corroboration",
+      "status": "resolved",
+      "created_at": "2026-06-01T17:00:00Z"
+    }
+  ],
+  "reviews": [
+    {
+      "review_id": "01JCYREVIEW0000001",
+      "task_id": "01JCYTASK00000000002",
+      "actor_id": "01JCYACTOR00000000000002",
+      "verdict": "confirmed",
+      "notes": "Budget amendment document and council minutes both confirm $2.3M amount.",
+      "evidence_edges": [],
+      "created_at": "2026-06-01T18:00:00Z"
+    }
+  ],
+  "expected_gate": {
+    "total_claims": 6,
+    "unsupported_claims": 0,
+    "contradicted_claims": 0,
+    "primary_supported_claims": 5,
+    "primary_evidence_ratio": 0.833333,
+    "unsupported_claim_share": 0.0,
+    "high_impact_claims": 1,
+    "high_impact_corroborated": 1,
+    "corroboration_ok": true,
+    "publish_gate_pass": true
+  },
+  "replay_invariants": [
+    "I1: Published story versions are immutable",
+    "I2: Evidence objects are immutable and content-addressed",
+    "I3: Corrections are append-only",
+    "I4: Claim text is stable once published",
+    "I5: Publication gating is deterministic",
+    "I7: All objects share the same platform scope",
+    "I8: Claims reference exactly one story version",
+    "I9: Evidence edges reference existing objects",
+    "I10: Corrections reference existing claims"
+  ]
+}

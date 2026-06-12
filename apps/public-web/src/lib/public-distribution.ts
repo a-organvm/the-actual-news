@@ -19,11 +19,11 @@ export type DistributionRoute = {
 export const launchMessages: LaunchMessage[] = [
   {
     channel: "Short post",
-    copy: "Read all about it: The Actual News turns stories into shareable claim modules with receipts attached."
+    copy: "Read all about it: Records Watch turns stories into shareable claim modules with receipts attached."
   },
   {
     channel: "Newsletter blurb",
-    copy: "The Actual News is building a public-service news ledger: narrative, claim ledger, evidence graph, and correction history in one public object."
+    copy: "Records Watch is building a public-service news ledger: narrative, claim ledger, evidence graph, and correction history in one public object."
   },
   {
     channel: "Sponsor note",
@@ -65,7 +65,7 @@ export function publicShareKit() {
     schema_version: "public-share-kit.v1",
     generated_at: new Date().toISOString(),
     source: {
-      title: "The Actual News",
+      title: "Records Watch",
       url: baseUrl,
       distribution_url: canonicalUrl("/distribution")
     },
