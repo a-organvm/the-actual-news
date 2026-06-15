@@ -16,12 +16,12 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.26.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: pnpm
@@ -46,12 +46,12 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.26.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: pnpm
@@ -63,7 +63,7 @@ jobs:
         run: pnpm launch:local
 
       - name: Upload default public launch report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-launch-report-default
           path: docs/public-launch-report.md
@@ -84,7 +84,7 @@ jobs:
           PUBLIC_ENV_FILE=.env.public LAUNCH_REPORT_FILE=artifacts/public-launch-report.strict.md pnpm launch:report
 
       - name: Upload strict public launch report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-launch-report-strict-template
           path: artifacts/public-launch-report.strict.md
@@ -114,12 +114,12 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.26.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: pnpm
@@ -180,11 +180,11 @@ jobs:
 
       - name: Set up Docker Buildx
         if: github.event_name == 'workflow_dispatch'
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build optional ${{ matrix.image }} artifact
         if: github.event_name == 'workflow_dispatch'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ${{ matrix.dockerfile }}
