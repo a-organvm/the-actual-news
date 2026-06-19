@@ -1,5 +1,7 @@
 # `$CORE_PROTOCOL_SPEC_V1` — Core Protocol RFC (Draft)
 
+Face: public
+
 `$RFC_ID = core-protocol-spec-v1`
 `$PROTOCOL_FAMILY = news-ledger`
 `$PROTOCOL_VERSION = v1`
@@ -245,6 +247,38 @@ All events MUST use this envelope.
 }
 ```
 
+### 3.9 `$STORY_BUNDLE` and `$TRANSPARENCY_CHECKPOINT`
+
+A story bundle is the canonical public reconstruction unit for a story.
+
+```json
+{
+  "story": { "...": "$STORY plus ordered versions" },
+  "claims": ["$CLAIM ordered by created_at asc"],
+  "evidence_edges": ["$EDGE ordered by created_at asc"],
+  "corrections": ["$CORRECTION_EVENT ordered by created_at asc"],
+  "bundle_hash": "sha256:<hex>"
+}
+```
+
+`bundle_hash` MUST be computed from the bundle without the `bundle_hash` field. Implementations MUST use deterministic JSON object key ordering, stable array ordering as stated above, RFC3339 timestamps, and SHA-256 over the canonical JSON bytes.
+
+A transparency checkpoint commits an ordered batch of public ledger events.
+
+```json
+{
+  "checkpoint_id": "01J...",
+  "platform_id": "plf_...",
+  "event_count": 1,
+  "merkle_root": "sha256:<hex>",
+  "event_ids": ["01J..."],
+  "leaf_hashes": ["sha256:<hex>"],
+  "created_at": "RFC3339"
+}
+```
+
+Transparency checkpoints are optional in v1, but if implemented they MUST NOT become a runtime dependency for story publication, reading, or correction.
+
 * * *
 
 ## 4. Normative algorithms
@@ -323,6 +357,20 @@ A. Lock the story row (`FOR UPDATE`) scoped by platform.
 B. Compute metrics for the chosen version within the same transaction.
 C. If gate fails, roll back with metrics.
 D. If gate passes, set story state to `published` and append an event `story.published.v1` in an outbox within the same transaction.
+
+### 4.7 Transparency checkpoint hashing
+
+Given an ordered list of public events `Events`, compute each leaf hash as:
+
+`leaf_hash = sha256("leaf:" || canonical_json(event_public_fields))`
+
+where `event_public_fields` contains `event_id`, `event_type`, `event_version`, `payload`, and `created_at`.
+
+Merkle parent hashes are:
+
+`parent_hash = sha256("node:" || left_hash || ":" || right_hash)`
+
+If a tree level has an odd number of nodes, duplicate the final hash for that level. The root of a one-leaf tree is that leaf hash. Implementations MAY use local signed checkpoint files or external anchoring targets, but checkpoint creation MUST be asynchronous after publication.
 
 * * *
 

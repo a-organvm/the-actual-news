@@ -1,5 +1,7 @@
 # Verifiable News Platform — Feature Specification
 
+Face: client
+
 **Status:** Draft
 **Version:** 0.1.0
 

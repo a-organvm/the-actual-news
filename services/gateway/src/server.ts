@@ -1,6 +1,7 @@
 import express from "express";
 import { loadEnv, DEFAULT_PORT } from "./env.js";
 import { makePool } from "./db.js";
+import { hashCanonical, merkleLeafHash, merkleProof, merkleRoot } from "./transparency.js";
 
 type Story = {
   story_id: string;
@@ -45,6 +46,14 @@ type Correction = {
   correction_id: string;
   claim_id: string;
   reason: string;
+  created_at: string;
+};
+
+type EventOutboxRow = {
+  event_id: string;
+  event_type: string;
+  event_version: string;
+  payload: Record<string, unknown>;
   created_at: string;
 };
 
@@ -192,12 +201,220 @@ app.get("/v1/story/:story_id", async (req, res) => {
     const corrections: Correction[] = correctionsQ.rows;
 
     const storyWithVersions = { ...story, versions };
-
-    return res.status(200).json({
+    const bundle = {
       story: storyWithVersions,
       claims,
       evidence_edges,
       corrections
+    };
+
+    return res.status(200).json({
+      ...bundle,
+      bundle_hash: hashCanonical(bundle)
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      code: "internal_error",
+      message: "unexpected server error",
+      details: { error: String(err?.message ?? err) }
+    });
+  }
+});
+
+// GET /v1/story/:story_id/transparency
+app.get("/v1/story/:story_id/transparency", async (req, res) => {
+  const storyId = req.params.story_id;
+
+  try {
+    const bundle = await loadStoryBundle(storyId);
+    if (!bundle) {
+      return res.status(404).json({ code: "not_found", message: "story not found" });
+    }
+
+    const checkpointQ = await pool.query(
+      `
+      SELECT
+        cp.checkpoint_id,
+        cp.merkle_root,
+        cp.leaf_hashes,
+        cp.created_at,
+        ce.event_id,
+        ce.leaf_index,
+        ce.leaf_hash
+      FROM transparency_checkpoints cp
+      JOIN transparency_checkpoint_events ce ON ce.checkpoint_id = cp.checkpoint_id
+      JOIN event_outbox eo ON eo.event_id = ce.event_id
+      WHERE cp.platform_id = $1
+        AND eo.platform_id = $1
+        AND eo.payload->>'story_id' = $2
+      ORDER BY cp.created_at DESC, ce.leaf_index ASC
+      `,
+      [env.PLATFORM_ID, storyId]
+    );
+
+    const checkpoints = checkpointQ.rows.map((r: any) => {
+      const leafHashes = Array.isArray(r.leaf_hashes) ? r.leaf_hashes.map(String) : [];
+      return {
+        checkpoint_id: r.checkpoint_id,
+        merkle_root: r.merkle_root,
+        created_at: r.created_at,
+        event_id: r.event_id,
+        inclusion_proof: merkleProof(leafHashes, Number(r.leaf_index))
+      };
+    });
+
+    return res.status(200).json({
+      story_id: storyId,
+      bundle_hash: hashCanonical(bundle),
+      checkpoints
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      code: "internal_error",
+      message: "unexpected server error",
+      details: { error: String(err?.message ?? err) }
+    });
+  }
+});
+
+// POST /v1/transparency/checkpoints
+app.post("/v1/transparency/checkpoints", async (req, res) => {
+  const limitRaw = Number(req.body?.limit ?? 100);
+  const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(Math.trunc(limitRaw), 1), 1000) : 100;
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const eventsQ = await client.query(
+      `
+      SELECT event_id, event_type, event_version, payload, created_at
+      FROM event_outbox eo
+      WHERE eo.platform_id = $1
+        AND eo.event_type IN ('story.published.v1', 'correction.created.v1')
+        AND NOT EXISTS (
+          SELECT 1
+          FROM transparency_checkpoint_events ce
+          WHERE ce.event_id = eo.event_id
+        )
+      ORDER BY eo.created_at ASC, eo.event_id ASC
+      LIMIT $2
+      FOR UPDATE SKIP LOCKED
+      `,
+      [env.PLATFORM_ID, limit]
+    );
+
+    const events: EventOutboxRow[] = eventsQ.rows;
+    if (events.length === 0) {
+      await client.query("COMMIT");
+      return res.status(200).json({ created: false, event_count: 0 });
+    }
+
+    const leaves = events.map((event) => ({
+      event_id: event.event_id,
+      event_type: event.event_type,
+      event_version: event.event_version,
+      payload: event.payload,
+      created_at: event.created_at
+    }));
+    const leafHashes = leaves.map((leaf) => merkleLeafHash(leaf));
+    const root = merkleRoot(leafHashes);
+    const checkpointId = ulidLike();
+    const eventIds = events.map((event) => event.event_id);
+
+    await client.query(
+      `
+      INSERT INTO transparency_checkpoints (
+        checkpoint_id,
+        platform_id,
+        event_count,
+        merkle_root,
+        event_ids,
+        leaf_hashes
+      )
+      VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb)
+      `,
+      [
+        checkpointId,
+        env.PLATFORM_ID,
+        events.length,
+        root,
+        JSON.stringify(eventIds),
+        JSON.stringify(leafHashes)
+      ]
+    );
+
+    for (let i = 0; i < events.length; i += 1) {
+      await client.query(
+        `
+        INSERT INTO transparency_checkpoint_events (
+          checkpoint_id,
+          event_id,
+          leaf_index,
+          leaf_hash
+        )
+        VALUES ($1, $2, $3, $4)
+        `,
+        [checkpointId, events[i].event_id, i, leafHashes[i]]
+      );
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(201).json({
+      created: true,
+      checkpoint_id: checkpointId,
+      event_count: events.length,
+      merkle_root: root,
+      event_ids: eventIds
+    });
+  } catch (err: any) {
+    try {
+      await client.query("ROLLBACK");
+    } catch {}
+    return res.status(500).json({
+      code: "internal_error",
+      message: "unexpected server error",
+      details: { error: String(err?.message ?? err) }
+    });
+  } finally {
+    client.release();
+  }
+});
+
+// GET /v1/transparency/checkpoints/:checkpoint_id
+app.get("/v1/transparency/checkpoints/:checkpoint_id", async (req, res) => {
+  const checkpointId = req.params.checkpoint_id;
+
+  try {
+    const checkpointQ = await pool.query(
+      `
+      SELECT checkpoint_id, platform_id, event_count, merkle_root, event_ids, leaf_hashes, created_at
+      FROM transparency_checkpoints
+      WHERE checkpoint_id = $1 AND platform_id = $2
+      LIMIT 1
+      `,
+      [checkpointId, env.PLATFORM_ID]
+    );
+
+    if (checkpointQ.rowCount === 0) {
+      return res.status(404).json({ code: "not_found", message: "checkpoint not found" });
+    }
+
+    const eventsQ = await pool.query(
+      `
+      SELECT ce.event_id, ce.leaf_index, ce.leaf_hash, eo.event_type, eo.event_version, eo.payload, eo.created_at
+      FROM transparency_checkpoint_events ce
+      JOIN event_outbox eo ON eo.event_id = ce.event_id
+      WHERE ce.checkpoint_id = $1 AND eo.platform_id = $2
+      ORDER BY ce.leaf_index ASC
+      `,
+      [checkpointId, env.PLATFORM_ID]
+    );
+
+    return res.status(200).json({
+      checkpoint: checkpointQ.rows[0],
+      events: eventsQ.rows
     });
   } catch (err: any) {
     return res.status(500).json({
@@ -438,6 +655,96 @@ app.post("/v1/story/:story_id/publish", async (req, res) => {
     client.release();
   }
 });
+
+async function loadStoryBundle(storyId: string) {
+  const storyQ = await pool.query(
+    `
+    SELECT story_id, platform_id, title, state, created_at, updated_at
+    FROM stories
+    WHERE story_id = $1 AND platform_id = $2
+    LIMIT 1
+    `,
+    [storyId, env.PLATFORM_ID]
+  );
+
+  if (storyQ.rowCount === 0) return null;
+
+  const story: Story = storyQ.rows[0];
+
+  const versionsQ = await pool.query(
+    `
+    SELECT story_version_id, story_id, body_markdown, disclosure_markdown, created_at
+    FROM story_versions
+    WHERE story_id = $1
+    ORDER BY created_at DESC
+    `,
+    [storyId]
+  );
+
+  const versions: StoryVersion[] = versionsQ.rows;
+
+  const claimsQ = await pool.query(
+    `
+    SELECT claim_id, story_id, story_version_id, claim_type, text, entities, time_window,
+           jurisdiction, support_status, confidence_model, confidence_review, created_at
+    FROM claims
+    WHERE story_id = $1
+    ORDER BY created_at ASC
+    `,
+    [storyId]
+  );
+
+  const claims: Claim[] = claimsQ.rows.map((r: any) => ({
+    ...r,
+    entities: Array.isArray(r.entities) ? r.entities : (r.entities ?? []),
+    time_window: r.time_window ?? {}
+  }));
+
+  const edgesQ = await pool.query(
+    `
+    SELECT claim_id, evidence_id_hash,
+           CASE
+             WHEN relation = 'context_only' THEN 'context'
+             WHEN relation = 'context' THEN 'context'
+             ELSE relation
+           END AS relation,
+           strength
+    FROM claim_evidence_edges
+    WHERE claim_id IN (
+      SELECT claim_id FROM claims WHERE story_id = $1
+    )
+    ORDER BY created_at ASC
+    `,
+    [storyId]
+  );
+
+  const evidence_edges: EvidenceEdge[] = edgesQ.rows.map((r: any) => ({
+    claim_id: r.claim_id,
+    evidence_id_hash: r.evidence_id_hash,
+    relation: r.relation,
+    strength: Number(r.strength ?? 0.5)
+  }));
+
+  const correctionsQ = await pool.query(
+    `
+    SELECT correction_id, claim_id, reason, created_at
+    FROM corrections
+    WHERE platform_id = $1
+      AND claim_id IN (SELECT claim_id FROM claims WHERE story_id = $2)
+    ORDER BY created_at ASC
+    `,
+    [env.PLATFORM_ID, storyId]
+  );
+
+  const corrections: Correction[] = correctionsQ.rows;
+
+  return {
+    story: { ...story, versions },
+    claims,
+    evidence_edges,
+    corrections
+  };
+}
 
 function ulidLike(): string {
   return (Date.now().toString(36).toUpperCase().padStart(10, "0") + Math.random().toString(36).slice(2, 18).toUpperCase()).slice(0, 26);
