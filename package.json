@@ -31,7 +31,11 @@
     "conformance:test": "pnpm --filter conformance-harness test",
     "test": "pnpm -r test",
     "test:services": "pnpm --filter claim-service test && pnpm --filter evidence-service test && pnpm --filter gateway-service test && pnpm --filter story-service test && pnpm --filter verify-service test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "civic:bundle:seed": "node tools/civic-bundle/seed.mjs",
+    "civic:bundle:export": "node tools/civic-bundle/export.mjs",
+    "civic:bundle:replay": "node tools/civic-bundle/replay.mjs",
+    "civic:bundle:verify": "node tools/civic-bundle/replay.mjs"
   },
   "engines": {
     "node": ">=20",

@@ -1,6 +1,6 @@
 # Revenue Provider Onboarding
 
-This is the public-safe setup path for turning The Actual News from a launch surface into an audience and revenue system. Keep hosted provider URLs public. Keep provider API keys, webhook secrets, CRM tokens, and payment credentials internal.
+This is the public-safe setup path for turning Records Watch from a launch surface into an audience and revenue system. Keep hosted provider URLs public. Keep provider API keys, webhook secrets, CRM tokens, and payment credentials internal.
 
 ## Required Public URLs
 
@@ -37,12 +37,12 @@ Use `/sponsors` and `/sponsors.json` to publish accepted sponsor disclosures and
 ## Public Env Example
 
 ```bash
-PUBLIC_SITE_URL=https://theactual.news \
-PUBLIC_API_URL=https://theactual.news \
-NEWSLETTER_URL=https://briefing-provider.example/the-actual-news \
-MEMBERSHIP_URL=https://membership-provider.example/the-actual-news \
-SPONSOR_URL=https://crm-provider.example/forms/the-actual-news-sponsor \
-ANALYTICS_DOMAIN=theactual.news \
+PUBLIC_SITE_URL=https://recordswatch.org \
+PUBLIC_API_URL=https://recordswatch.org \
+NEWSLETTER_URL=https://briefing-provider.example/records-watch \
+MEMBERSHIP_URL=https://membership-provider.example/records-watch \
+SPONSOR_URL=https://crm-provider.example/forms/records-watch-sponsor \
+ANALYTICS_DOMAIN=recordswatch.org \
 pnpm public-env:template > .env.public
 ```
 
@@ -51,9 +51,9 @@ Replace the example hosts with real hosted provider URLs. The strict checker rej
 The generated `.env.public` template includes inline guardrails for the provider URLs and public/internal boundary. Prefer regenerating it for deployment handoff instead of copying values by hand:
 
 ```bash
-PUBLIC_SITE_URL=https://theactual.news \
-PUBLIC_API_URL=https://theactual.news \
-ANALYTICS_DOMAIN=theactual.news \
+PUBLIC_SITE_URL=https://recordswatch.org \
+PUBLIC_API_URL=https://recordswatch.org \
+ANALYTICS_DOMAIN=recordswatch.org \
 pnpm public-env:template > .env.public
 ```
 
@@ -63,7 +63,7 @@ Then fill only the three hosted provider URL values and run strict verification.
 
 ```bash
 PUBLIC_ENV_FILE=.env.public pnpm launch:check:strict
-PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://theactual.news pnpm launch:deployed
+PUBLIC_ENV_FILE=.env.public PUBLIC_WEB_BASE_URL=https://recordswatch.org pnpm launch:deployed
 ```
 
 For local source verification without a public deployment:
@@ -84,9 +84,9 @@ When the three hosted provider destinations are ready, update only these public 
 
 ```json
 {
-  "NEXT_PUBLIC_NEWSLETTER_URL": "https://hosted-newsletter-provider.example/the-actual-news",
-  "NEXT_PUBLIC_MEMBERSHIP_URL": "https://hosted-membership-provider.example/the-actual-news",
-  "NEXT_PUBLIC_SPONSOR_URL": "https://hosted-sponsor-provider.example/the-actual-news"
+  "NEXT_PUBLIC_NEWSLETTER_URL": "https://hosted-newsletter-provider.example/records-watch",
+  "NEXT_PUBLIC_MEMBERSHIP_URL": "https://hosted-membership-provider.example/records-watch",
+  "NEXT_PUBLIC_SPONSOR_URL": "https://hosted-sponsor-provider.example/records-watch"
 }
 ```
 

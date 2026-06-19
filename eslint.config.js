@@ -15,6 +15,7 @@ export default tseslint.config(
       '**/.next/**',
       '**/.open-next/**',
       '**/.vercel/**',
+      '**/out/**',
       '**/coverage/**',
       '**/*.min.js',
     ],

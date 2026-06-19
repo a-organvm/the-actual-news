@@ -44,4 +44,10 @@ apps/public-web/next-env.d.ts
 # Netlify
 .netlify
 .lh/
+
+# Agent session artifacts
 .specstory/
+.gemini/
+
+# Claude background-session worktrees
+.claude/worktrees/

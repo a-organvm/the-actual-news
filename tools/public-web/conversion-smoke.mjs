@@ -4,7 +4,7 @@ import path from "node:path";
 
 const root = path.resolve(new URL("../..", import.meta.url).pathname);
 const serverPath = path.join(root, "apps/public-web/.next/standalone/apps/public-web/server.js");
-const siteUrl = "https://theactual.news";
+const siteUrl = "https://recordswatch.org";
 
 function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -171,9 +171,9 @@ await withServer(
 console.log("[conversion-smoke] Checking hosted provider URLs redirect publicly...");
 await withServer(
   {
-    NEXT_PUBLIC_NEWSLETTER_URL: "https://briefing.theactual.news/join",
-    NEXT_PUBLIC_MEMBERSHIP_URL: "https://members.theactual.news/start",
-    NEXT_PUBLIC_SPONSOR_URL: "https://sponsor.theactual.news/intake"
+    NEXT_PUBLIC_NEWSLETTER_URL: "https://briefing.recordswatch.org/join",
+    NEXT_PUBLIC_MEMBERSHIP_URL: "https://members.recordswatch.org/start",
+    NEXT_PUBLIC_SPONSOR_URL: "https://sponsor.recordswatch.org/intake"
   },
   async (baseUrl) => {
     const health = await json(baseUrl, "/api/healthz");
@@ -191,7 +191,7 @@ await withServer(
       "/go/membership?utm_source=conversion_smoke&utm_medium=redirect&utm_campaign=membership"
     );
     const membershipUrl = new URL(membershipLocation);
-    assert(membershipUrl.origin === "https://members.theactual.news", `membership origin mismatch: ${membershipLocation}`);
+    assert(membershipUrl.origin === "https://members.recordswatch.org", `membership origin mismatch: ${membershipLocation}`);
     assert(membershipUrl.pathname === "/start", `membership path mismatch: ${membershipLocation}`);
     assert(membershipUrl.searchParams.get("utm_source") === "conversion_smoke", "membership UTM source missing");
     assert(membershipUrl.searchParams.get("utm_medium") === "redirect", "membership UTM medium missing");

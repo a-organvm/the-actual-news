@@ -30,7 +30,7 @@ export function NewsAtomCard({ atom, priority = false }: NewsAtomCardProps) {
   const cardUrl = `${SITE_URL.replace(/\/$/, "")}/api/social-card.svg?title=${encodeURIComponent(
     atom.title
   )}&kicker=${encodeURIComponent(atom.kicker)}&state=${encodeURIComponent(atom.state)}`;
-  const shareText = atom.shareText ?? `${atom.title} - The Actual News`;
+  const shareText = atom.shareText ?? `${atom.title} - Records Watch`;
   const encodedUrl = encodeURIComponent(absoluteUrl);
   const encodedText = encodeURIComponent(shareText);
 
